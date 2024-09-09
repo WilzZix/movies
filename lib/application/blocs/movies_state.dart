@@ -5,16 +5,32 @@ sealed class MoviesState {}
 
 final class MoviesInitial extends MoviesState {}
 
-class PopularMoviesLoadingState extends MoviesState {}
+///Popular Movies
+class TopRatedMoviesLoadingState extends MoviesState {}
 
-class PopularMoviesLoadedState extends MoviesState {
+class TopRatedMoviesLoadedState extends MoviesState {
   final MoviesResult data;
 
-  PopularMoviesLoadedState(this.data);
+  TopRatedMoviesLoadedState(this.data);
 }
 
-class PopularMoviesLoadingErrorState extends MoviesState {
+class TopRatedMoviesLoadingErrorState extends MoviesState {
   final String msg;
 
-  PopularMoviesLoadingErrorState(this.msg);
+  TopRatedMoviesLoadingErrorState(this.msg);
+}
+
+///Upcoming movies
+class UpcomingMoviesLoadingState extends MoviesState {}
+
+class UpcomingMoviesLoadedState extends MoviesState {
+  final MoviesResult data;
+
+  UpcomingMoviesLoadedState(this.data);
+}
+
+class UpcomingMoviesLoadError extends MoviesState {
+  final String msg;
+
+  UpcomingMoviesLoadError(this.msg);
 }

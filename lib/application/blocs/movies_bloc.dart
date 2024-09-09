@@ -11,19 +11,31 @@ part 'movies_state.dart';
 
 class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
   MoviesBloc() : super(MoviesInitial()) {
-    on<GetPopularMoviesEvent>(_getPopularMovies);
+    on<GetTopRatedMoviesEvent>(_getTopRatedMovies);
+    on<GetUpcomingMoviesEvent>(_getUpcomingMovies);
   }
 
   NetworkMoviesDataSource dataSource = NetworkMoviesDataSource();
 
-  FutureOr<void> _getPopularMovies(
-      GetPopularMoviesEvent event, Emitter<MoviesState> emit) async {
-    emit(PopularMoviesLoadingState());
+  FutureOr<void> _getTopRatedMovies(
+      GetTopRatedMoviesEvent event, Emitter<MoviesState> emit) async {
+    emit(TopRatedMoviesLoadingState());
     try {
-      final result = await dataSource.getTopMovies();
-      emit(PopularMoviesLoadedState(result));
+      final result = await dataSource.getTopRatedMovies();
+      emit(TopRatedMoviesLoadedState(result));
     } catch (e) {
-      emit(PopularMoviesLoadingErrorState(e.toString()));
+      emit(TopRatedMoviesLoadingErrorState(e.toString()));
+    }
+  }
+
+  FutureOr<void> _getUpcomingMovies(
+      GetUpcomingMoviesEvent event, Emitter<MoviesState> emit) async {
+    emit(UpcomingMoviesLoadingState());
+    try {
+      final result = await dataSource.getUpcomingMovies();
+      emit(UpcomingMoviesLoadedState(result));
+    } catch (e) {
+      emit(UpcomingMoviesLoadError(e.toString()));
     }
   }
 }

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies/application/blocs/movies_bloc.dart';
+import 'package:movies/core/utils/extensions.dart';
 import 'package:movies/data/models/movies_model.dart';
 
 class MyHomePage extends StatefulWidget {
@@ -13,6 +14,12 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<MoviesBloc>(context).add(GetUpcomingMoviesEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -87,10 +94,6 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                     const Spacer(),
                     Container(
-                      padding: const EdgeInsets.symmetric(
-                        horizontal: 16,
-                        vertical: 8,
-                      ),
                       decoration: BoxDecoration(
                         color: Colors.white.withOpacity(0.5),
                         border: Border.all(
@@ -160,11 +163,14 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 16),
               BlocBuilder<MoviesBloc, MoviesState>(
+                buildWhen: (context, state) {
+                  return state is TopRatedMoviesLoadedState;
+                },
                 builder: (context, state) {
-                  if (state is PopularMoviesLoadingState) {
+                  if (state is TopRatedMoviesLoadingState) {
                     return const CircularProgressIndicator();
                   }
-                  if (state is PopularMoviesLoadingErrorState) {
+                  if (state is TopRatedMoviesLoadingErrorState) {
                     return Center(
                       child: Text(
                         state.msg,
@@ -172,10 +178,11 @@ class _MyHomePageState extends State<MyHomePage> {
                       ),
                     );
                   }
-                  if (state is PopularMoviesLoadedState) {
+                  if (state is TopRatedMoviesLoadedState) {
                     return SizedBox(
                       height: 250,
                       child: ListView.builder(
+                        itemCount: state.data.results!.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           return MovieListItem(
@@ -197,14 +204,18 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 16),
               BlocBuilder<MoviesBloc, MoviesState>(
+                buildWhen: (context,state){
+                  return state is UpcomingMoviesLoadedState;
+                },
                 builder: (context, state) {
-                  if (state is PopularMoviesLoadingState) {
+                  if (state is UpcomingMoviesLoadingState) {
                     return const CircularProgressIndicator();
                   }
-                  if (state is PopularMoviesLoadedState) {
+                  if (state is UpcomingMoviesLoadedState) {
                     return SizedBox(
                       height: 250,
                       child: ListView.builder(
+                        itemCount: state.data.results!.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
                           return MovieListItem(
@@ -243,25 +254,45 @@ class MovieListItem extends StatelessWidget {
           Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
             child: Image.network(
-              'https://api.themoviedb.org/3/movie/upcoming/${moviesResult.backdropPath!}',
+              'https://image.tmdb.org/t/p/w500${moviesResult.backdropPath!}',
               width: 150,
-              height: 200,
-              fit: BoxFit.fill,
+              height: 198,
+              fit: BoxFit.cover,
             ),
           ),
           const SizedBox(
             height: 8,
           ),
-          const Text(
-            'Spiderman Across',
-            style: TextStyle(color: Colors.white),
+          Text(
+            moviesResult.originalTitle!,
+            style: const TextStyle(color: Colors.white),
           ),
           const SizedBox(
             height: 4,
           ),
-          const Text(
-            '2023 PG 2h 20m',
-            style: TextStyle(color: Colors.white),
+          Row(
+            children: [
+              Text(
+                moviesResult.releaseDate!.formatedYearOfDateTime(),
+                style: const TextStyle(color: Colors.white),
+              ),
+              const SizedBox(width: 4),
+              const Text(
+                '·',
+                style: TextStyle(color: Colors.white),
+              ),
+              const SizedBox(width: 4),
+              Text(
+                moviesResult.adult! ? "17+" : "PG",
+                style: const TextStyle(color: Colors.white),
+              ),
+              const SizedBox(width: 4),
+              const Text(
+                '·',
+                style: TextStyle(color: Colors.white),
+              ),
+              const SizedBox(width: 4),
+            ],
           )
         ],
       ),

@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
     return MultiBlocProvider(
       providers: [
         BlocProvider(
-          create: (context) => MoviesBloc()..add(GetPopularMoviesEvent()),
+          create: (context) => MoviesBloc()..add(GetTopRatedMoviesEvent()),
         ),
       ],
       child: MaterialApp(
