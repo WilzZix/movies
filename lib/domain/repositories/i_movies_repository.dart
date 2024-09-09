@@ -4,4 +4,6 @@ abstract class IMoviesRepository {
   Future<MoviesResult> getTopRatedMovies();
 
   Future<MoviesResult> getUpcomingMovies();
+
+  Future<MoviesResult> getPopularMovies();
 }

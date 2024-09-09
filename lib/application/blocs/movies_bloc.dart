@@ -13,6 +13,7 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
   MoviesBloc() : super(MoviesInitial()) {
     on<GetTopRatedMoviesEvent>(_getTopRatedMovies);
     on<GetUpcomingMoviesEvent>(_getUpcomingMovies);
+    on<GetPopularMoviesEvent>(_getPopularMovies);
   }
 
   NetworkMoviesDataSource dataSource = NetworkMoviesDataSource();
@@ -36,6 +37,17 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
       emit(UpcomingMoviesLoadedState(result));
     } catch (e) {
       emit(UpcomingMoviesLoadError(e.toString()));
+    }
+  }
+
+  FutureOr<void> _getPopularMovies(
+      GetPopularMoviesEvent event, Emitter<MoviesState> emit) async {
+    emit(PopularMoviesLoadingState());
+    try {
+      final result = await dataSource.getPopularMovies();
+      emit(PopularMoviesLoadedState(result));
+    } catch (e) {
+      emit(PopularMoviesLoadErrorState(e.toString()));
     }
   }
 }

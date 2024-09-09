@@ -1,3 +1,4 @@
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies/application/blocs/movies_bloc.dart';
@@ -18,6 +19,7 @@ class _MyHomePageState extends State<MyHomePage> {
   void initState() {
     super.initState();
     BlocProvider.of<MoviesBloc>(context).add(GetUpcomingMoviesEvent());
+    BlocProvider.of<MoviesBloc>(context).add(GetPopularMoviesEvent());
   }
 
   @override
@@ -75,84 +77,51 @@ class _MyHomePageState extends State<MyHomePage> {
               const SizedBox(
                 height: 24,
               ),
-              Container(
-                height: 200,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(16),
-                  image: const DecorationImage(
-                    fit: BoxFit.cover,
-                    image: NetworkImage(
-                      'https://img.freepik.com/free-psd/interior-design-landing-page-template_23-2148663724.jpg?w=1380&t=st=1725283615~exp=1725284215~hmac=bdfcbae6fea688c789a3f7322eae28ba6fda82e8d9f9066067eff271d06dedf7',
-                    ),
-                  ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const MovieRatingWidget(
-                      ratingPoint: '8,7',
-                    ),
-                    const Spacer(),
-                    Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white.withOpacity(0.5),
-                        border: Border.all(
-                          color: Colors.white,
-                        ),
-                        borderRadius: const BorderRadius.only(
-                          bottomLeft: Radius.circular(16),
-                          bottomRight: Radius.circular(16),
-                        ),
+              BlocBuilder<MoviesBloc, MoviesState>(
+                buildWhen: (context, state) {
+                  return state is PopularMoviesLoadedState;
+                },
+                builder: (context, state) {
+                  if (state is PopularMoviesLoadedState) {
+                    return CarouselSlider.builder(
+                      itemCount: state.data.results!.length,
+                      itemBuilder: (BuildContext context, int itemIndex,
+                          int pageViewIndex) {
+                        return PopularMovieItem(
+                          movieResult: state.data.results![itemIndex],
+                        );
+                      },
+                      options: CarouselOptions(
+                        height: 200,
+                        aspectRatio: 16 / 9,
+                        viewportFraction: 1,
+                        initialPage: 0,
+                        enableInfiniteScroll: true,
+                        reverse: false,
+                        autoPlay: true,
+                        autoPlayInterval: const Duration(seconds: 3),
+                        autoPlayAnimationDuration:
+                            const Duration(milliseconds: 800),
+                        autoPlayCurve: Curves.fastOutSlowIn,
+                        enlargeCenterPage: true,
+                        enlargeFactor: 0.3,
+                        scrollDirection: Axis.horizontal,
                       ),
-                      child: const Row(
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                'Oppenheimer',
-                                style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                              SizedBox(height: 8),
-                              Text(
-                                'History Thriller Drama Mystery',
-                                style: TextStyle(color: Colors.white),
-                              ),
-                              SizedBox(
-                                height: 8,
-                              ),
-                              Row(
-                                children: [
-                                  TextContainerWidget(
-                                    title: '17+',
-                                  ),
-                                  SizedBox(
-                                    width: 8,
-                                  ),
-                                  TextContainerWidget(
-                                    title: '2023',
-                                  ),
-                                  SizedBox(
-                                    width: 8,
-                                  ),
-                                  TextContainerWidget(
-                                    title: '3 hours',
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                          SizedBox(
-                            width: 32,
-                          ),
-                          AddToWatchListWidget(),
-                        ],
+                    );
+                  }
+                  if (state is PopularMoviesLoadingState) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (state is PopularMoviesLoadErrorState) {
+                    return Center(
+                      child: Text(
+                        state.msg,
+                        style: const TextStyle(color: Colors.white),
                       ),
-                    ),
-                  ],
-                ),
+                    );
+                  }
+                  return const SizedBox();
+                },
               ),
               const SizedBox(
                 height: 16,
@@ -204,7 +173,7 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
               const SizedBox(height: 16),
               BlocBuilder<MoviesBloc, MoviesState>(
-                buildWhen: (context,state){
+                buildWhen: (context, state) {
                   return state is UpcomingMoviesLoadedState;
                 },
                 builder: (context, state) {
@@ -233,6 +202,212 @@ class _MyHomePageState extends State<MyHomePage> {
         ),
       ),
     );
+  }
+}
+
+class PopularMovieItem extends StatelessWidget {
+  const PopularMovieItem({
+    super.key,
+    required this.movieResult,
+  });
+
+  final Results movieResult;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 200,
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        image: DecorationImage(
+          fit: BoxFit.cover,
+          image: NetworkImage(
+            'https://image.tmdb.org/t/p/w500${movieResult.backdropPath}',
+          ),
+        ),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          MovieRatingWidget(
+            ratingPoint: movieResult.voteAverage!.toString(),
+          ),
+          const Spacer(),
+          Container(
+            padding: const EdgeInsets.all(3),
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.5),
+              border: Border.all(
+                color: Colors.white,
+              ),
+              borderRadius: const BorderRadius.only(
+                bottomLeft: Radius.circular(16),
+                bottomRight: Radius.circular(16),
+              ),
+            ),
+            child: Row(
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      movieResult.originalTitle! ?? '',
+                      style: const TextStyle(
+                          color: Colors.white, fontWeight: FontWeight.bold),
+                    ),
+                    const SizedBox(height: 8),
+                    SizedBox(
+                      width: 100,
+                      height: 20,
+                      child: ListView.builder(
+                        itemCount: movieResult.genreIds!.length,
+                        scrollDirection: Axis.vertical,
+                        itemBuilder: (BuildContext context, int index) {
+                          return GenreBuilder(
+                            genreId: movieResult.genreIds![index],
+                          );
+                        },
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      children: [
+                        TextContainerWidget(
+                          title: !movieResult.adult! ? '17+' : 'GP',
+                        ),
+                        const SizedBox(
+                          width: 8,
+                        ),
+                        TextContainerWidget(
+                          title:
+                              movieResult.releaseDate!.formatedYearOfDateTime(),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+                const Spacer(),
+                const AddToWatchListWidget(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class GenreBuilder extends StatelessWidget {
+  const GenreBuilder({
+    super.key,
+    required this.genreId,
+  });
+
+  final int genreId;
+
+  @override
+  Widget build(BuildContext context) {
+    switch (genreId) {
+      case 28:
+        return const Text(
+          'Action',
+          style: TextStyle(color: Colors.white),
+        );
+      case 12:
+        return const Text(
+          'Adventure',
+          style: TextStyle(color: Colors.white),
+        );
+      case 16:
+        return const Text(
+          'Animation',
+          style: TextStyle(color: Colors.white),
+        );
+      case 35:
+        return const Text(
+          'Comedy',
+          style: TextStyle(color: Colors.white),
+        );
+      case 80:
+        return const Text(
+          'Crime',
+          style: TextStyle(color: Colors.white),
+        );
+      case 99:
+        return const Text(
+          'Documentary',
+          style: TextStyle(color: Colors.white),
+        );
+      case 18:
+        return const Text(
+          'Drama',
+          style: TextStyle(color: Colors.white),
+        );
+      case 10751:
+        return const Text(
+          'Family',
+          style: TextStyle(color: Colors.white),
+        );
+      case 14:
+        return const Text(
+          'Fantasy',
+          style: TextStyle(color: Colors.white),
+        );
+      case 36:
+        return const Text(
+          'History',
+          style: TextStyle(color: Colors.white),
+        );
+      case 27:
+        return const Text(
+          'Horror',
+          style: TextStyle(color: Colors.white),
+        );
+      case 10402:
+        return const Text(
+          'Music',
+          style: TextStyle(color: Colors.white),
+        );
+      case 9648:
+        return const Text(
+          'Mystery',
+          style: TextStyle(color: Colors.white),
+        );
+      case 10749:
+        return const Text(
+          'Romance',
+          style: TextStyle(color: Colors.white),
+        );
+      case 878:
+        return const Text(
+          'Science Fiction',
+          style: TextStyle(color: Colors.white),
+        );
+      case 10770:
+        return const Text(
+          'TV Movie',
+          style: TextStyle(color: Colors.white),
+        );
+      case 53:
+        return const Text(
+          'Thriller',
+          style: TextStyle(color: Colors.white),
+        );
+      case 10752:
+        return const Text(
+          'War',
+          style: TextStyle(color: Colors.white),
+        );
+      case 37:
+        return const Text(
+          'Western',
+          style: TextStyle(color: Colors.white),
+        );
+      default:
+        return const SizedBox();
+    }
   }
 }
 
