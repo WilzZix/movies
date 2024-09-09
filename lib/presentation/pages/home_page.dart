@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies/application/blocs/movies_bloc.dart';
+import 'package:movies/data/models/movies_model.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
@@ -156,14 +159,34 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {},
               ),
               const SizedBox(height: 16),
-              SizedBox(
-                height: 250,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return const MovieListItem();
-                  },
-                ),
+              BlocBuilder<MoviesBloc, MoviesState>(
+                builder: (context, state) {
+                  if (state is PopularMoviesLoadingState) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (state is PopularMoviesLoadingErrorState) {
+                    return Center(
+                      child: Text(
+                        state.msg,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    );
+                  }
+                  if (state is PopularMoviesLoadedState) {
+                    return SizedBox(
+                      height: 250,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return MovieListItem(
+                            moviesResult: state.data.results![index],
+                          );
+                        },
+                      ),
+                    );
+                  }
+                  return const SizedBox();
+                },
               ),
               const SizedBox(
                 height: 16,
@@ -173,14 +196,26 @@ class _MyHomePageState extends State<MyHomePage> {
                 onTap: () {},
               ),
               const SizedBox(height: 16),
-              SizedBox(
-                height: 250,
-                child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return const MovieListItem();
-                  },
-                ),
+              BlocBuilder<MoviesBloc, MoviesState>(
+                builder: (context, state) {
+                  if (state is PopularMoviesLoadingState) {
+                    return const CircularProgressIndicator();
+                  }
+                  if (state is PopularMoviesLoadedState) {
+                    return SizedBox(
+                      height: 250,
+                      child: ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return MovieListItem(
+                            moviesResult: state.data.results![index],
+                          );
+                        },
+                      ),
+                    );
+                  }
+                  return const SizedBox();
+                },
               ),
             ],
           ),
@@ -193,7 +228,10 @@ class _MyHomePageState extends State<MyHomePage> {
 class MovieListItem extends StatelessWidget {
   const MovieListItem({
     super.key,
+    required this.moviesResult,
   });
+
+  final Results moviesResult;
 
   @override
   Widget build(BuildContext context) {
@@ -205,7 +243,7 @@ class MovieListItem extends StatelessWidget {
           Container(
             decoration: BoxDecoration(borderRadius: BorderRadius.circular(16)),
             child: Image.network(
-              'https://img.freepik.com/free-psd/interior-design-landing-page-template_23-2148663724.jpg?w=1380&t=st=1725283615~exp=1725284215~hmac=bdfcbae6fea688c789a3f7322eae28ba6fda82e8d9f9066067eff271d06dedf7',
+              'https://api.themoviedb.org/3/movie/upcoming/${moviesResult.backdropPath!}',
               width: 150,
               height: 200,
               fit: BoxFit.fill,

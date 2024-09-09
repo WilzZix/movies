@@ -28,6 +28,15 @@ class MoviesResult {
     data['total_results'] = totalResults;
     return data;
   }
+
+  static List<MoviesResult> fetchData(Map<String, dynamic> json) {
+    final List data = json['results'] ?? [];
+    final List<MoviesResult> list = [];
+    for (var element in data) {
+      list.add(MoviesResult.fromJson(element));
+    }
+    return list;
+  }
 }
 
 class Results {
@@ -49,28 +58,30 @@ class Results {
   String? name;
   String? originalName;
   String? firstAirDate;
-  List<String>? originCountry;
 
-  Results(
-      {this.backdropPath,
-      this.id,
-      this.title,
-      this.originalTitle,
-      this.overview,
-      this.posterPath,
-      this.mediaType,
-      this.adult,
-      this.originalLanguage,
-      this.genreIds,
-      this.popularity,
-      this.releaseDate,
-      this.video,
-      this.voteAverage,
-      this.voteCount,
-      this.name,
-      this.originalName,
-      this.firstAirDate,
-      this.originCountry});
+  //List<String>? originCountry;
+
+  Results({
+    this.backdropPath,
+    this.id,
+    this.title,
+    this.originalTitle,
+    this.overview,
+    this.posterPath,
+    this.mediaType,
+    this.adult,
+    this.originalLanguage,
+    this.genreIds,
+    this.popularity,
+    this.releaseDate,
+    this.video,
+    this.voteAverage,
+    this.voteCount,
+    this.name,
+    this.originalName,
+    this.firstAirDate,
+    //this.originCountry,
+  });
 
   Results.fromJson(Map<String, dynamic> json) {
     backdropPath = json['backdrop_path'];
@@ -91,7 +102,7 @@ class Results {
     name = json['name'];
     originalName = json['original_name'];
     firstAirDate = json['first_air_date'];
-    originCountry = json['origin_country'].cast<String>();
+  //  originCountry = json['origin_country'].cast<String>() ?? '';
   }
 
   Map<String, dynamic> toJson() {
@@ -114,7 +125,7 @@ class Results {
     data['name'] = name;
     data['original_name'] = originalName;
     data['first_air_date'] = firstAirDate;
-    data['origin_country'] = originCountry;
+  //  data['origin_country'] = originCountry;
     return data;
   }
 }
