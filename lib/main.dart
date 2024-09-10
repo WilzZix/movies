@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:movies/application/blocs/movies_bloc.dart';
 import 'package:movies/core/network_provider.dart';
 import 'package:movies/presentation/pages/home_page/home_page.dart';
+import 'package:movies/routes/go_router/go_router.dart';
 
 void main() {
   NetworkProvider.initApp();
@@ -21,9 +22,9 @@ class MyApp extends StatelessWidget {
           create: (context) => MoviesBloc()..add(GetTopRatedMoviesEvent()),
         ),
       ],
-      child: MaterialApp(
+      child: MaterialApp.router(
+        routerConfig: AppRouter().router,
         theme: ThemeData(),
-        home: const MyHomePage(),
       ),
     );
   }

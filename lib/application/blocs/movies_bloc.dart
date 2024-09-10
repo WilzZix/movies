@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 import 'package:movies/data/datasources/network_data_source/network_movies_datasource.dart';
+import 'package:movies/data/models/movies_detail_model.dart';
 import 'package:movies/data/models/movies_model.dart';
 
 part 'movies_event.dart';
@@ -14,6 +15,7 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
     on<GetTopRatedMoviesEvent>(_getTopRatedMovies);
     on<GetUpcomingMoviesEvent>(_getUpcomingMovies);
     on<GetPopularMoviesEvent>(_getPopularMovies);
+    on<GetMovieDetailsEvent>(_getMovieDetails);
   }
 
   NetworkMoviesDataSource dataSource = NetworkMoviesDataSource();
@@ -48,6 +50,17 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
       emit(PopularMoviesLoadedState(result));
     } catch (e) {
       emit(PopularMoviesLoadErrorState(e.toString()));
+    }
+  }
+
+  FutureOr<void> _getMovieDetails(
+      GetMovieDetailsEvent event, Emitter<MoviesState> emit) async {
+    emit(MovieDetailsLoadingState());
+    try {
+      final result = await dataSource.getMovieDetails(movieId: event.movieId);
+      emit(MovieDetailsLoadedState(result));
+    } catch (e) {
+      emit(MoviesDetailsLoadingErrorState(e.toString()));
     }
   }
 }

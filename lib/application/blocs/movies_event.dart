@@ -8,3 +8,9 @@ class GetTopRatedMoviesEvent extends MoviesEvent {}
 class GetUpcomingMoviesEvent extends MoviesEvent {}
 
 class GetPopularMoviesEvent extends MoviesEvent {}
+
+class GetMovieDetailsEvent extends MoviesEvent {
+  final int movieId;
+
+  GetMovieDetailsEvent(this.movieId);
+}

@@ -1,10 +1,12 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:movies/application/blocs/movies_bloc.dart';
 import 'package:movies/presentation/pages/home_page/components/movie_list_item.dart';
 import 'package:movies/presentation/pages/home_page/components/popular_movie_item.dart';
 import 'package:movies/presentation/pages/home_page/components/see_all_movies_widget.dart';
+import 'package:movies/presentation/pages/movie_detail_page/movie_detail_page.dart';
 
 class MyHomePage extends StatefulWidget {
   const MyHomePage({
@@ -155,8 +157,14 @@ class _MyHomePageState extends State<MyHomePage> {
                         itemCount: state.data.results!.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
-                          return MovieListItem(
-                            moviesResult: state.data.results![index],
+                          return GestureDetector(
+                            onTap: () {
+                              context.pushNamed(MovieDetailPage.tag,
+                                  extra: state.data.results![index].id);
+                            },
+                            child: MovieListItem(
+                              moviesResult: state.data.results![index],
+                            ),
                           );
                         },
                       ),
@@ -188,8 +196,13 @@ class _MyHomePageState extends State<MyHomePage> {
                         itemCount: state.data.results!.length,
                         scrollDirection: Axis.horizontal,
                         itemBuilder: (context, index) {
-                          return MovieListItem(
-                            moviesResult: state.data.results![index],
+                          return GestureDetector(
+                            onTap: () {
+                              context.pushNamed(MovieDetailPage.tag);
+                            },
+                            child: MovieListItem(
+                              moviesResult: state.data.results![index],
+                            ),
                           );
                         },
                       ),
@@ -205,9 +218,3 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 }
-
-
-
-
-
-

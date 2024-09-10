@@ -49,3 +49,18 @@ class PopularMoviesLoadErrorState extends MoviesState {
 
   PopularMoviesLoadErrorState(this.msg);
 }
+
+///Movies Details
+class MovieDetailsLoadingState extends MoviesState {}
+
+class MovieDetailsLoadedState extends MoviesState {
+  final MovieDetailsPage data;
+
+  MovieDetailsLoadedState(this.data);
+}
+
+class MoviesDetailsLoadingErrorState extends MoviesState {
+  final String msg;
+
+  MoviesDetailsLoadingErrorState(this.msg);
+}
