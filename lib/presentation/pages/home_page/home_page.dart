@@ -198,7 +198,7 @@ class _MyHomePageState extends State<MyHomePage> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
-                              context.pushNamed(MovieDetailPage.tag);
+                              context.pushNamed(MovieDetailPage.tag,extra: state.data.results![index].id);
                             },
                             child: MovieListItem(
                               moviesResult: state.data.results![index],
