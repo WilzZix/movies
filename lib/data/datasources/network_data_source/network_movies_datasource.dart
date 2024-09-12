@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:dio/dio.dart';
 import 'package:movies/core/network_provider.dart';
+import 'package:movies/data/models/actor_model.dart';
 import 'package:movies/data/models/movies_detail_model.dart';
 import 'package:movies/data/models/movies_model.dart';
 import 'package:movies/domain/repositories/i_movies_repository.dart';
@@ -31,5 +32,12 @@ class NetworkMoviesDataSource implements IMoviesRepository {
   Future<MovieDetailsPage> getMovieDetails({required int movieId}) async {
     final Response response = await NetworkProvider.dio.get('/$movieId');
     return MovieDetailsPage.fromJson(response.data ?? {});
+  }
+
+  @override
+  Future<List<ActorModel>> fetchMovieActor({required int movieId}) async {
+    final Response response =
+        await NetworkProvider.dio.get('/$movieId/credits');
+    return ActorModel.fetchData(response.data ?? {});
   }
 }

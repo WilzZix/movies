@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:movies/application/actors/actors_bloc.dart';
 import 'package:movies/application/blocs/movies_bloc.dart';
 import 'package:movies/core/utils/extensions.dart';
-import 'package:movies/presentation/pages/home_page/components/add_to_watch_list_widget.dart';
+import 'package:movies/data/models/actor_model.dart';
 import 'package:movies/presentation/pages/home_page/components/genre_builder.dart';
 
 import '../home_page/components/text_container_widget.dart';
@@ -23,6 +24,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
     super.initState();
     BlocProvider.of<MoviesBloc>(context)
         .add(GetMovieDetailsEvent(widget.movieId));
+    BlocProvider.of<ActorsBloc>(context)
+        .add(GetMovieActorsEvent(widget.movieId));
   }
 
   @override
@@ -143,7 +146,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     height: 8,
                   ),
                   const Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Column(
                         children: [
@@ -154,7 +157,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                           SizedBox(
                             height: 8,
                           ),
-                          Text('8',style: TextStyle(color: Colors.white)),
+                          Text('8', style: TextStyle(color: Colors.white)),
                           SizedBox(
                             height: 8,
                           ),
@@ -162,15 +165,20 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                         ],
                       ),
                       VerticalDivider(
+                        width: 20,
+                        thickness: 1,
+                        indent: 20,
+                        endIndent: 0,
                         color: Colors.white,
                       ),
                       Column(
                         children: [
-                          Text('Overall Rating',style: TextStyle(color: Colors.white)),
+                          Text('Overall Rating',
+                              style: TextStyle(color: Colors.white)),
                           SizedBox(
                             height: 8,
                           ),
-                          Text('8',style: TextStyle(color: Colors.white)),
+                          Text('8', style: TextStyle(color: Colors.white)),
                           SizedBox(
                             height: 8,
                           ),
@@ -178,6 +186,24 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                         ],
                       )
                     ],
+                  ),
+                  const SizedBox(
+                    height: 16,
+                  ),
+                  BlocBuilder<ActorsBloc, ActorsState>(
+                    builder: (context, state) {
+                      if (state is MovieActorsLoadingState) {
+                        return const Center(
+                          child: CircularProgressIndicator(),
+                        );
+                      }
+                      if (state is MovieActorsLoadedState) {
+                        return MoviePersonsWidget(
+                          data: state.data!,
+                        );
+                      }
+                      return const SizedBox();
+                    },
                   )
                 ],
               ),
@@ -186,6 +212,107 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
           return const SizedBox();
         },
       ),
+    );
+  }
+}
+
+class MoviePersonsWidget extends StatelessWidget {
+  const MoviePersonsWidget({
+    super.key,
+    required this.data,
+  });
+
+  final List<ActorModel> data;
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        const Row(
+          children: [
+            Text(
+              'Cast',
+              style: TextStyle(color: Colors.white),
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Text(
+              '·',
+              style: TextStyle(color: Colors.white),
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Text(
+              'Writter',
+              style: TextStyle(color: Colors.white),
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Text(
+              '·',
+              style: TextStyle(color: Colors.white),
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Text(
+              'Director',
+              style: TextStyle(color: Colors.white),
+            ),
+            SizedBox(
+              width: 4,
+            ),
+            Spacer(),
+            Text(
+              'See all',
+              style: TextStyle(color: Colors.white),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 16,
+        ),
+        SizedBox(
+          height: 140,
+          child: ListView.builder(
+            itemCount: data.length,
+            scrollDirection: Axis.horizontal,
+            itemBuilder: (context, index) {
+              return Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Column(
+                  children: [
+                    Container(
+
+                      height: 80,
+                      width: 80,
+                      decoration: BoxDecoration(
+                        image: DecorationImage(
+                          fit: BoxFit.cover,
+                          image: NetworkImage(data[index].profilePath == null
+                              ? 'https://stock.adobe.com/uz/images/monochrome-icon/65772719'
+                              : 'https://image.tmdb.org/t/p/original${data[index].profilePath!}'),
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 8,
+                    ),
+                    Text(
+                      data[index].originalName!,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+
+                  ],
+                ),
+              );
+            },
+          ),
+        )
+      ],
     );
   }
 }
