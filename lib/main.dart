@@ -30,13 +30,29 @@ class MyApp extends StatelessWidget {
         color: Colors.black,
         routerConfig: AppRouter().router,
         theme: ThemeData(
-          bottomNavigationBarTheme: BottomNavigationBarThemeData(
-            backgroundColor: Colors.black,
-            type: BottomNavigationBarType.fixed
-          ),
+          bottomNavigationBarTheme: const BottomNavigationBarThemeData(
+              backgroundColor: Colors.black,
+              type: BottomNavigationBarType.fixed),
           inputDecorationTheme: InputDecorationTheme(
-            outlineBorder: BorderSide(
+            fillColor: Colors.black,
+            hintStyle: TextStyle(color: Colors.white),
+            border: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(32),
+            ),
+            outlineBorder: const BorderSide(
               color: Colors.white,
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(32),
+              borderSide: const BorderSide(
+                color: Colors.white,
+              ),
+            ),
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.circular(32),
+              borderSide: const BorderSide(
+                color: Colors.white,
+              ),
             ),
           ),
         ),

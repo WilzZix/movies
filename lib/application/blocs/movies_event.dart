@@ -14,3 +14,10 @@ class GetMovieDetailsEvent extends MoviesEvent {
 
   GetMovieDetailsEvent(this.movieId);
 }
+
+///Search movie
+class SearchMovieEvent extends MoviesEvent {
+  final String keyword;
+
+  SearchMovieEvent(this.keyword);
+}

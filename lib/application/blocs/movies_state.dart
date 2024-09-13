@@ -64,3 +64,18 @@ class MoviesDetailsLoadingErrorState extends MoviesState {
 
   MoviesDetailsLoadingErrorState(this.msg);
 }
+
+///Search movie
+class SearchMovieLoadingState extends MoviesState {}
+
+class SearchMovieLoadedState extends MoviesState {
+  final MoviesResult data;
+
+  SearchMovieLoadedState(this.data);
+}
+
+class SearchMovieLoadErrorState extends MoviesState {
+  final String msg;
+
+  SearchMovieLoadErrorState(this.msg);
+}

@@ -40,4 +40,11 @@ class NetworkMoviesDataSource implements IMoviesRepository {
         await NetworkProvider.dio.get('/$movieId/credits');
     return ActorModel.fetchData(response.data ?? {});
   }
+
+  @override
+  Future<MoviesResult> searchMovies({required String keyword}) async {
+    final Response response = await NetworkProvider.dio
+        .get('${IRoutes.search}/movie?query=$keyword&include_adult=false');
+    return MoviesResult.fromJson(response.data ?? {});
+  }
 }

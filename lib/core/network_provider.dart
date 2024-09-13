@@ -9,7 +9,7 @@ class NetworkProvider {
   static Future<void> initApp() async {
     dio = Dio(
       BaseOptions(
-        baseUrl: 'https://api.themoviedb.org/3/movie',
+        baseUrl: IRoutes.baseUrl,
         headers: {
           'Authorization':
               ' Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNmY2MmM3YmIxNTczNTM0ZjU4MWQwNDdlMjUwNjllOCIsIm5iZiI6MTcyNTY4MDEyMi43MDIyMjIsInN1YiI6IjVmODA5NzBiMDIxY2VlMDAzNTM5ZjQxOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ccmjcAH00ac6jdcsg_IkK3IiG9yrHOSEOh7otuwcScE',
@@ -32,8 +32,9 @@ class NetworkProvider {
 }
 
 class IRoutes {
-  static const String baseUrl = 'https://api.themoviedb.org/3/movie';
-  static const String topRated = '/top_rated';
-  static const String popularMovies = '/popular';
-  static const String upcomingMovies = '/upcoming';
+  static const String baseUrl = 'https://api.themoviedb.org/3';
+  static const String topRated = '/movie/top_rated';
+  static const String popularMovies = '/movie/popular';
+  static const String upcomingMovies = '/movie/upcoming';
+  static const String search = '/search';
 }
