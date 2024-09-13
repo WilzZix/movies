@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_rating/flutter_rating.dart';
 import 'package:movies/application/actors/actors_bloc.dart';
 import 'package:movies/application/blocs/movies_bloc.dart';
 import 'package:movies/core/utils/extensions.dart';
@@ -145,44 +146,47 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   const SizedBox(
                     height: 8,
                   ),
-                  const Row(
+                  Row(
                     mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                     children: [
                       Column(
                         children: [
-                          Text(
+                          const Text(
                             'Overall Rating',
                             style: TextStyle(color: Colors.white),
                           ),
-                          SizedBox(
+                          const SizedBox(
                             height: 8,
                           ),
-                          Text('8', style: TextStyle(color: Colors.white)),
-                          SizedBox(
+                          Text('${state.data.voteAverage}',
+                              style: const TextStyle(color: Colors.white)),
+                          const SizedBox(
                             height: 8,
                           ),
-                          StarRatingWidget()
+                          StarRatingWidget(voteRating: state.data.voteAverage!/2)
                         ],
                       ),
-                      VerticalDivider(
+                      const VerticalDivider(
                         width: 20,
                         thickness: 1,
                         indent: 20,
                         endIndent: 0,
                         color: Colors.white,
                       ),
-                      Column(
+                      const Column(
                         children: [
-                          Text('Overall Rating',
+                          Text('Your Rating',
                               style: TextStyle(color: Colors.white)),
                           SizedBox(
                             height: 8,
                           ),
-                          Text('8', style: TextStyle(color: Colors.white)),
+                          Text('0', style: TextStyle(color: Colors.white)),
                           SizedBox(
                             height: 8,
                           ),
-                          StarRatingWidget()
+                          StarRatingWidget(
+                            voteRating: 0,
+                          )
                         ],
                       )
                     ],
@@ -199,7 +203,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       }
                       if (state is MovieActorsLoadedState) {
                         return MoviePersonsWidget(
-                          data: state.data!,
+                          data: state.data,
                         );
                       }
                       return const SizedBox();
@@ -286,7 +290,6 @@ class MoviePersonsWidget extends StatelessWidget {
                 child: Column(
                   children: [
                     Container(
-
                       height: 80,
                       width: 80,
                       decoration: BoxDecoration(
@@ -305,7 +308,6 @@ class MoviePersonsWidget extends StatelessWidget {
                       data[index].originalName!,
                       style: const TextStyle(color: Colors.white),
                     ),
-
                   ],
                 ),
               );
@@ -318,48 +320,14 @@ class MoviePersonsWidget extends StatelessWidget {
 }
 
 class StarRatingWidget extends StatelessWidget {
-  const StarRatingWidget({super.key});
+  const StarRatingWidget({super.key, required this.voteRating});
+
+  final double voteRating;
 
   @override
   Widget build(BuildContext context) {
-    return const Row(
-      children: [
-        Icon(
-          Icons.star,
-          color: Colors.yellow,
-        ),
-        SizedBox(
-          width: 4,
-        ),
-        Icon(
-          Icons.star,
-          color: Colors.yellow,
-        ),
-        SizedBox(
-          width: 4,
-        ),
-        Icon(
-          Icons.star,
-          color: Colors.yellow,
-        ),
-        SizedBox(
-          width: 4,
-        ),
-        Icon(
-          Icons.star,
-          color: Colors.yellow,
-        ),
-        SizedBox(
-          width: 4,
-        ),
-        Icon(
-          Icons.star,
-          color: Colors.yellow,
-        ),
-        SizedBox(
-          width: 4,
-        ),
-      ],
+    return StarRating(
+      rating: voteRating,
     );
   }
 }

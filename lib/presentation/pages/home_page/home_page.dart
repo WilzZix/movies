@@ -3,21 +3,24 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movies/application/blocs/movies_bloc.dart';
+import 'package:movies/presentation/pages/favourite_page/favourite_page.dart';
 import 'package:movies/presentation/pages/home_page/components/movie_list_item.dart';
 import 'package:movies/presentation/pages/home_page/components/popular_movie_item.dart';
 import 'package:movies/presentation/pages/home_page/components/see_all_movies_widget.dart';
 import 'package:movies/presentation/pages/movie_detail_page/movie_detail_page.dart';
+import 'package:movies/presentation/pages/search_page/search_page.dart';
+import 'package:movies/presentation/pages/settings_page/settings_page.dart';
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({
+class BottomNavigationPage extends StatefulWidget {
+  const BottomNavigationPage({
     super.key,
   });
 
   @override
-  State<MyHomePage> createState() => _MyHomePageState();
+  State<BottomNavigationPage> createState() => _BottomNavigationPageState();
 }
 
-class _MyHomePageState extends State<MyHomePage> {
+class _BottomNavigationPageState extends State<BottomNavigationPage> {
   @override
   void initState() {
     super.initState();
@@ -25,6 +28,73 @@ class _MyHomePageState extends State<MyHomePage> {
     BlocProvider.of<MoviesBloc>(context).add(GetPopularMoviesEvent());
   }
 
+  List<Widget> screens = [
+    const HomePage(),
+    const SearchPage(),
+    const FavouritePage(),
+    const SettingsPage(),
+  ];
+  int selectedItem = 0;
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      bottomNavigationBar: BottomNavigationBar(
+        onTap: (value) {
+          selectedItem = value;
+          setState(() {});
+        },
+        items: const [
+          BottomNavigationBarItem(
+            label: '',
+            icon: Icon(
+              Icons.home_outlined,
+              size: 35,
+              color: Colors.white,
+            ),
+          ),
+          BottomNavigationBarItem(
+            label: '',
+            icon: Icon(
+              Icons.search,
+              size: 35,
+              color: Colors.white,
+            ),
+          ),
+          BottomNavigationBarItem(
+            label: '',
+            icon: Icon(
+              Icons.list,
+              size: 35,
+              color: Colors.white,
+            ),
+          ),
+          BottomNavigationBarItem(
+            label: '',
+            icon: Icon(
+              Icons.settings,
+              size: 35,
+              color: Colors.white,
+            ),
+          ),
+        ],
+      ),
+      body: IndexedStack(
+        index: selectedItem,
+        children: screens,
+      ),
+    );
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -198,7 +268,8 @@ class _MyHomePageState extends State<MyHomePage> {
                         itemBuilder: (context, index) {
                           return GestureDetector(
                             onTap: () {
-                              context.pushNamed(MovieDetailPage.tag,extra: state.data.results![index].id);
+                              context.pushNamed(MovieDetailPage.tag,
+                                  extra: state.data.results![index].id);
                             },
                             child: MovieListItem(
                               moviesResult: state.data.results![index],

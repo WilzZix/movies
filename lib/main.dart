@@ -27,8 +27,19 @@ class MyApp extends StatelessWidget {
         ),
       ],
       child: MaterialApp.router(
+        color: Colors.black,
         routerConfig: AppRouter().router,
-        theme: ThemeData(),
+        theme: ThemeData(
+          bottomNavigationBarTheme: BottomNavigationBarThemeData(
+            backgroundColor: Colors.black,
+            type: BottomNavigationBarType.fixed
+          ),
+          inputDecorationTheme: InputDecorationTheme(
+            outlineBorder: BorderSide(
+              color: Colors.white,
+            ),
+          ),
+        ),
       ),
     );
   }

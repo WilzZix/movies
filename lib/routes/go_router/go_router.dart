@@ -10,7 +10,7 @@ class AppRouter {
     routes: [
       GoRoute(
         path: '/',
-        builder: (context, state) => const MyHomePage(),
+        builder: (context, state) => const BottomNavigationPage(),
         routes: [
           GoRoute(
             path: MovieDetailPage.tag,
