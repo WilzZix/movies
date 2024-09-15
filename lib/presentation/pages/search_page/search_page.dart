@@ -106,15 +106,15 @@ class _SearchPageState extends State<SearchPage> {
                               child: Row(
                                 children: [
                                   SizedBox(
-                                    height: 100,
-                                    width: 50,
+                                    height: 200,
+                                    width: 100,
                                     child: state.data.results![index]
                                                 .backdropPath !=
                                             null
                                         ? Image(
-                                            fit: BoxFit.fill,
+                                            fit: BoxFit.cover,
                                             image: NetworkImage(
-                                              'https://image.tmdb.org/t/p/w500${state.data.results![index].backdropPath!}',
+                                              'https://image.tmdb.org/t/p/w500${state.data.results![index].posterPath!}',
                                             ),
                                           )
                                         : null,
@@ -123,6 +123,7 @@ class _SearchPageState extends State<SearchPage> {
                                     width: 16,
                                   ),
                                   Column(
+                                    mainAxisSize: MainAxisSize.max,
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
@@ -202,9 +203,6 @@ class _SearchPageState extends State<SearchPage> {
                                                     color: Colors.white),
                                               ),
                                             ],
-                                          ),
-                                          SizedBox(
-                                            width: 100,
                                           ),
                                           const AddToWatchListWidget()
                                         ],

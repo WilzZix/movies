@@ -30,14 +30,14 @@ class NetworkMoviesDataSource implements IMoviesRepository {
 
   @override
   Future<MovieDetailsPage> getMovieDetails({required int movieId}) async {
-    final Response response = await NetworkProvider.dio.get('/$movieId');
+    final Response response = await NetworkProvider.dio.get('/movie/$movieId');
     return MovieDetailsPage.fromJson(response.data ?? {});
   }
 
   @override
   Future<List<ActorModel>> fetchMovieActor({required int movieId}) async {
     final Response response =
-        await NetworkProvider.dio.get('/$movieId/credits');
+        await NetworkProvider.dio.get('/movie/$movieId/credits');
     return ActorModel.fetchData(response.data ?? {});
   }
 
