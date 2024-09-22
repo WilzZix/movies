@@ -35,7 +35,7 @@ class MyApp extends StatelessWidget {
               type: BottomNavigationBarType.fixed),
           inputDecorationTheme: InputDecorationTheme(
             fillColor: Colors.black,
-            hintStyle: TextStyle(color: Colors.white),
+            hintStyle: const TextStyle(color: Colors.white),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(32),
             ),

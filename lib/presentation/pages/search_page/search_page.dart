@@ -137,10 +137,8 @@ class _SearchPageState extends State<SearchPage> {
                                           itemBuilder: (BuildContext context,
                                               int index) {
                                             return GenreBuilder(
-                                              genreId: state
-                                                  .data
-                                                  .results![index]
-                                                  .genreIds![index],
+                                              genreId: state.data
+                                                  .results![index].genreIds!,
                                             );
                                           },
                                         ),

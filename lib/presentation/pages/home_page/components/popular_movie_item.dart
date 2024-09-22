@@ -68,7 +68,7 @@ class PopularMovieItem extends StatelessWidget {
                           scrollDirection: Axis.vertical,
                           itemBuilder: (BuildContext context, int index) {
                             return GenreBuilder(
-                              genreId: movieResult.genreIds![index],
+                              genreId: movieResult.genreIds!,
                             );
                           },
                         ),

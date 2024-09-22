@@ -57,7 +57,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       image: DecorationImage(
                         fit: BoxFit.cover,
                         image: NetworkImage(
-                          'https://image.tmdb.org/t/p/w500${state.data.backdropPath}',
+                          'https://image.tmdb.org/t/p/w500${state.data
+                              .backdropPath}',
                         ),
                       ),
                     ),
@@ -75,8 +76,10 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       itemCount: state.data.genres!.length,
                       scrollDirection: Axis.vertical,
                       itemBuilder: (BuildContext context, int index) {
+                        List<int> genreIds = state.data.genres!.map((
+                            genre) => genre.id!).toList();
                         return GenreBuilder(
-                          genreId: state.data.genres![index].id!,
+                          genreId: genreIds,
                         );
                       },
                     ),
@@ -163,7 +166,8 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                           const SizedBox(
                             height: 8,
                           ),
-                          StarRatingWidget(voteRating: state.data.voteAverage!/2)
+                          StarRatingWidget(voteRating: state.data.voteAverage! /
+                              2)
                         ],
                       ),
                       const VerticalDivider(
@@ -297,7 +301,8 @@ class MoviePersonsWidget extends StatelessWidget {
                           fit: BoxFit.cover,
                           image: NetworkImage(data[index].profilePath == null
                               ? 'https://stock.adobe.com/uz/images/monochrome-icon/65772719'
-                              : 'https://image.tmdb.org/t/p/original${data[index].profilePath!}'),
+                              : 'https://image.tmdb.org/t/p/original${data[index]
+                              .profilePath!}'),
                         ),
                       ),
                     ),
