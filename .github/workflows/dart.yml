@@ -7,20 +7,15 @@ on:
     branches: [main]
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
+  main:
+    runs-on: macos-latest
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
+      - name: Clone repository
+        uses: actions/checkout@v4
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.3' # Replace with the Flutter version you want to use
-
-      - name: Install dependencies
-        run: flutter pub get
-        
-      - name: Build apk
-        run: flutter build apk
+          channel: stable
+      - run: flutter pub get
+      - run: flutter test
+      - run: flutter build ios --release --no-codesign
