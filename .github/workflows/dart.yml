@@ -10,6 +10,11 @@ jobs:
   main:
     runs-on: macos-latest
     steps:
+      - name: Set up Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.24.0' # Replace with the Flutter version you want to use
+          channel: 'stable'
       - name: Clone repository
         uses: actions/checkout@v4
       - name: Set up Flutter
