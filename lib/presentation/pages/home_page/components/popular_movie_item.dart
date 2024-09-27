@@ -54,7 +54,7 @@ class PopularMovieItem extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        movieResult.originalTitle! ?? '',
+                        movieResult.originalTitle!,
                         overflow: TextOverflow.ellipsis,
                         style: const TextStyle(
                             color: Colors.white, fontWeight: FontWeight.bold),

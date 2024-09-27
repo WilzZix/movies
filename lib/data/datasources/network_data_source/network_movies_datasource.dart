@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:dio/dio.dart';
 import 'package:movies/core/network_provider.dart';
 import 'package:movies/data/models/actor_model.dart';

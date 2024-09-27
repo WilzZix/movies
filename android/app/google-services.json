@@ -1,0 +1,48 @@
+{
+  "project_info": {
+    "project_number": "502197851017",
+    "project_id": "movie-77e42",
+    "storage_bucket": "movie-77e42.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502197851017:android:640d4ea75e5cb7d760c758",
+        "android_client_info": {
+          "package_name": "com.example.movies"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRl2nqt2R7lxAX0hAUgEI7-fRO39OFQ1k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:502197851017:android:35a9fb733d85102c60c758",
+        "android_client_info": {
+          "package_name": "com.example.movies.wilzix"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDRl2nqt2R7lxAX0hAUgEI7-fRO39OFQ1k"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
