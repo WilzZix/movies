@@ -2,9 +2,9 @@ name: Flutter CI
 
 on:
   push:
-    branches: [main]
+    branches: [ main ]
   pull_request:
-    branches: [main]
+    branches: [ main ]
 
 jobs:
   main:
@@ -23,3 +23,18 @@ jobs:
           channel: stable
       - run: flutter pub get
       - run: flutter build ios --release --no-codesign
+
+
+      - name: Build apk
+        run: flutter build apk --release
+
+
+      - name: Upload to Firebase App Distribution
+        env:
+          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
+        run: |
+          curl -sL https://firebase.tools | bash
+          firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
+            --app ${{ secrets.FIREBASE_APP_ID }} \
+            --release-notes "Automated build from GitHub Actions" \
+            --groups "Wilzix" # Specify your tester group here
