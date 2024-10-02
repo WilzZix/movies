@@ -15,19 +15,30 @@ class SearchPage extends StatefulWidget {
 
 class _SearchPageState extends State<SearchPage> {
   TextEditingController controller = TextEditingController();
+  ScrollController scrollController = ScrollController();
 
   @override
   void initState() {
     super.initState();
     controller.addListener(searchMovie);
+    scrollController.addListener(_loadMore);
   }
 
   void searchMovie() {
     if (controller.text.isNotEmpty) {
       BlocProvider.of<MoviesBloc>(context)
           .add(SearchMovieEvent(controller.text));
+    } else {
+      BlocProvider.of<MoviesBloc>(context).add(GetPreviousSearchResult());
     }
     setState(() {});
+  }
+
+  void _loadMore() {
+    if (scrollController.position.pixels ==
+        scrollController.position.maxScrollExtent) {
+      BlocProvider.of<MoviesBloc>(context).add(LoadMoreEvent());
+    }
   }
 
   @override
@@ -49,6 +60,7 @@ class _SearchPageState extends State<SearchPage> {
         ),
       ),
       body: CustomScrollView(
+        controller: scrollController,
         slivers: [
           SliverAppBar(
             pinned: false,
@@ -181,6 +193,7 @@ class _SearchPageState extends State<SearchPage> {
                                       ),
                                     ],
                                   ),
+                                  const SizedBox(width: 55),
                                   const AddToWatchListWidget()
                                 ],
                               )

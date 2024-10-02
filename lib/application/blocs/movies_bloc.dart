@@ -17,9 +17,14 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
     on<GetPopularMoviesEvent>(_getPopularMovies);
     on<GetMovieDetailsEvent>(_getMovieDetails);
     on<SearchMovieEvent>(_searchMovie);
+    on<LoadMoreEvent>(_loadMore);
+    on<GetPreviousSearchResult>(_getPreviousSearchResult);
   }
 
   NetworkMoviesDataSource dataSource = NetworkMoviesDataSource();
+  int page = 1;
+  String keyword = '';
+  List<Results>? results = [];
 
   FutureOr<void> _getTopRatedMovies(
       GetTopRatedMoviesEvent event, Emitter<MoviesState> emit) async {
@@ -67,12 +72,34 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
 
   FutureOr<void> _searchMovie(
       SearchMovieEvent event, Emitter<MoviesState> emit) async {
+    results!.clear();
     emit(SearchMovieLoadingState());
     try {
-      final result = await dataSource.searchMovies(keyword: event.keyword);
-      emit(SearchMovieLoadedState(result));
+      keyword = event.keyword;
+      final result = await dataSource.searchMovies(
+        keyword: event.keyword,
+        page: page,
+      );
+      results!.addAll(result.results!);
+      emit(SearchMovieLoadedState(MoviesResult(results: results)));
     } catch (e) {
       emit(SearchMovieLoadErrorState(e.toString()));
     }
+  }
+
+  FutureOr<void> _loadMore(
+      LoadMoreEvent event, Emitter<MoviesState> emit) async {
+    final result = await dataSource.searchMovies(
+      keyword: keyword,
+      page: ++page,
+    );
+    results!.addAll(result.results!);
+    emit(SearchMovieLoadedState(MoviesResult(results: results)));
+  }
+
+  FutureOr<void> _getPreviousSearchResult(
+      GetPreviousSearchResult event, Emitter<MoviesState> emit) {
+    results!.clear();
+    emit(SearchMovieLoadedState(MoviesResult(results: results)));
   }
 }

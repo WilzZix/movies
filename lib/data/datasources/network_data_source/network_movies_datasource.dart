@@ -40,9 +40,14 @@ class NetworkMoviesDataSource implements IMoviesRepository {
   }
 
   @override
-  Future<MoviesResult> searchMovies({required String keyword}) async {
-    final Response response = await NetworkProvider.dio
-        .get('${IRoutes.search}/movie?query=$keyword&include_adult=false');
+  Future<MoviesResult> searchMovies({
+    required String keyword,
+    required int page,
+  }) async {
+    Map<String, dynamic> queryParams = {'page': page};
+    final Response response = await NetworkProvider.dio.get(
+        '${IRoutes.search}/movie?query=$keyword&include_adult=false',
+        queryParameters: queryParams);
     return MoviesResult.fromJson(response.data ?? {});
   }
 }
