@@ -2,43 +2,55 @@ name: Flutter CI
 
 on:
   push:
-    branches: [ main ]
+    branches:
+      - main
   pull_request:
-    branches: [ main ]
+    branches:
+      - main
 
 jobs:
-  main:
-    runs-on: macos-latest
+  build:
+    runs-on: ubuntu-latest
+
+    env:
+      FIREBASE_APP_ID: ${{ secrets.FIREBASE_APP_ID }} # Add your Firebase App ID as a secret
+      FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }} # Firebase token for authentication
+
     steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Set up JDK 11
+        uses: actions/setup-java@v2
+        with:
+          distribution: 'adopt'  # Use AdoptOpenJDK distribution
+          java-version: '11'
+
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0' # Replace with the Flutter version you want to use
-          channel: 'stable'
-      - name: Clone repository
-        uses: actions/checkout@v4
-      - name: Set up Flutter
-        uses: subosito/flutter-action@v2
-        with:
-          channel: stable
-      - run: flutter pub get
-      ##  - run: flutter build ios --release --no-codesign
-      ##- name: Set up JDK 11
-      ##  uses: actions/setup-java@v2
-      ##  with:
-      ##    distribution: 'adopt'
-      ##    java-version: '11'
+          flutter-version: '3.0.0' # Replace with your desired Flutter version
 
-      ##- name: Build apk
-      ##  run: flutter build apk --release
+      - name: Install dependencies
+        run: flutter pub get
 
+      - name: Run tests
+        run: flutter test
+
+      - name: Build APK
+        run: |
+          set -x # Enable verbose logging
+          flutter build apk --release
+          set +x # Disable verbose logging
 
       - name: Upload to Firebase App Distribution
         env:
           FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
         run: |
+          set -x # Enable verbose logging
           curl -sL https://firebase.tools | bash
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
             --app ${{ secrets.FIREBASE_APP_ID }} \
             --release-notes "Automated build from GitHub Actions" \
-            --testers "nodirbarotov0707@gmail.com"
+            --groups "wilzix" # Specify your tester group here
+          set +x # Disable verbose logging
