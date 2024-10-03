@@ -57,5 +57,6 @@ jobs:
           firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
             --app ${{ secrets.FIREBASE_APP_ID }} \
             --release-notes "Automated build from GitHub Actions" \
+          set +x # Disable verbose logging
             --testers "nodirbarotov0707@gmail.com"
           set +x # Disable verbose logging
