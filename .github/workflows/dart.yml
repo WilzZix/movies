@@ -39,24 +39,19 @@ jobs:
         with:
           sdk: '3.5.1'
 
-      - name: Install dependencies
-        run: dart pub get
-
-      - name: Build APK
-        run: |
-          set -x # Enable verbose logging
-          flutter build apk --release
-          set +x # Disable verbose logging
-
-      - name: Upload to Firebase App Distribution
-        env:
-          FIREBASE_TOKEN: ${{ secrets.FIREBASE_TOKEN }}
-        run: |
-          set -x # Enable verbose logging
-          curl -sL https://firebase.tools | bash
-          firebase appdistribution:distribute build/app/outputs/flutter-apk/app-release.apk \
-            --app ${{ secrets.FIREBASE_APP_ID }} \
-            --release-notes "Automated build from GitHub Actions" \
-          set +x # Disable verbose logging
-            --testers "nodirbarotov0707@gmail.com"
-          set +x # Disable verbose logging
+      - uses: subosito/flutter-action@v2
+        with:
+          channel: "stable"
+      - run: flutter pub get
+      - run: flutter build apk
+               - uses: actions/upload-artifact@v1
+               with:
+                 name: release-apk
+                 path: build/app/outputs/apk/release/app-release.apk
+      - name: upload artifact to Firebase App Distribution
+        uses: wzieba/Firebase-Distribution-Github-Action@v1
+        with:
+          appId: ${{secrets.FIREBASE_APP_ID}}
+          token: ${{secrets.FIREBASE_TOKEN}}
+          groups: wilzix-group
+          file: build/app/outputs/apk/release/app-release.apk
