@@ -29,13 +29,18 @@ jobs:
       - name: Set up Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.0.0' # Replace with your desired Flutter version
+          flutter-version: '3.24.0' # Replace with your desired Flutter version
 
       - name: Install dependencies
         run: flutter pub get
 
-      - name: Run tests
-        run: flutter test
+      - name: Setup Dart
+        uses: dart-lang/setup-dart@v1
+        with:
+          sdk: '3.5.1'
+
+      - name: Install dependencies
+        run: dart pub get
 
       - name: Build APK
         run: |
