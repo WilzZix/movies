@@ -164,8 +164,8 @@ class _SearchPageState extends State<SearchPage> {
                                   ),
                                   TextContainerWidget(
                                     title: state
-                                        .data.results![index].releaseDate!
-                                        .formatedYearOfDateTime(),
+                                            .data.results![index].releaseDate ??
+                                        '1999-07-07'.formatedYearOfDateTime(),
                                   ),
                                   const SizedBox(height: 32)
                                 ],
