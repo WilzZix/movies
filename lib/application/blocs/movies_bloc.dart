@@ -1,7 +1,9 @@
 import 'dart:async';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+import 'package:movies/data/datasources/local_data_source/local_data_source.dart';
 import 'package:movies/data/datasources/network_data_source/network_movies_datasource.dart';
 import 'package:movies/data/models/movies_detail_model.dart';
 import 'package:movies/data/models/movies_model.dart';
@@ -19,9 +21,12 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
     on<SearchMovieEvent>(_searchMovie);
     on<LoadMoreEvent>(_loadMore);
     on<GetPreviousSearchResult>(_getPreviousSearchResult);
+    on<EddMovieToPreviousSearchResult>(
+        _addSearchResultMovieToPreviousSearchResult);
   }
 
   NetworkMoviesDataSource dataSource = NetworkMoviesDataSource();
+  LocalDataSource localDataSource = LocalDataSource();
   int page = 1;
   String keyword = '';
   List<Results>? results = [];
@@ -101,5 +106,14 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
       GetPreviousSearchResult event, Emitter<MoviesState> emit) {
     results!.clear();
     emit(SearchMovieLoadedState(MoviesResult(results: results)));
+  }
+
+  Future<void> _addSearchResultMovieToPreviousSearchResult(
+      EddMovieToPreviousSearchResult event, Emitter<MoviesState> emit) async {
+    try {
+      await localDataSource.cacheData(event.searchedMovie);
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }

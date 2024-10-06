@@ -22,6 +22,12 @@ class SearchMovieEvent extends MoviesEvent {
   SearchMovieEvent(this.keyword);
 }
 
+class EddMovieToPreviousSearchResult extends MoviesEvent {
+  final MoviesResult searchedMovie;
+
+  EddMovieToPreviousSearchResult(this.searchedMovie);
+}
+
 class GetPreviousSearchResult extends MoviesEvent {}
 
 ///Load more
