@@ -3,10 +3,11 @@ import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
-import 'package:movies/data/datasources/local_data_source/local_data_source.dart';
+
 import 'package:movies/data/datasources/network_data_source/network_movies_datasource.dart';
 import 'package:movies/data/models/movies_detail_model.dart';
 import 'package:movies/data/models/movies_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'movies_event.dart';
 
@@ -26,7 +27,7 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
   }
 
   NetworkMoviesDataSource dataSource = NetworkMoviesDataSource();
-  LocalDataSource localDataSource = LocalDataSource();
+
   int page = 1;
   String keyword = '';
   List<Result>? results = [];
@@ -104,14 +105,16 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
 
   FutureOr<void> _getPreviousSearchResult(
       GetPreviousSearchResult event, Emitter<MoviesState> emit) async {
+    var prefService = await SharedPreferences.getInstance();
     emit(LastSearchedMovieLoadedState(
-        await localDataSource.getPreviousSearchMovies()));
+        await prefService.getString('previousSearch') as Result));
   }
 
   Future<void> _addSearchResultMovieToPreviousSearchResult(
       EddMovieToPreviousSearchResult event, Emitter<MoviesState> emit) async {
     try {
-      await localDataSource.cacheData(event.searchedMovie);
+      var prefs = await SharedPreferences.getInstance();
+      prefs.setString('previousSearch', event.searchedMovie as String);
     } catch (e) {
       log(e.toString());
     }
