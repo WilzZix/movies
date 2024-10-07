@@ -23,7 +23,7 @@ class SearchMovieEvent extends MoviesEvent {
 }
 
 class EddMovieToPreviousSearchResult extends MoviesEvent {
-  final MoviesResult searchedMovie;
+  final Result searchedMovie;
 
   EddMovieToPreviousSearchResult(this.searchedMovie);
 }

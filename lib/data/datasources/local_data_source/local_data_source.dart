@@ -6,13 +6,13 @@ class LocalDataSource implements ILocalMovieRepository {
   final HiveStorage _hiveStorage = HiveStorage();
 
   @override
-  Future<List<MoviesResult>?> getPreviousSearchMovies() async {
-    List<MoviesResult> data = await _hiveStorage.getPreviousSearchMovies();
+  Future<Result> getPreviousSearchMovies() async {
+    Result data = await _hiveStorage.getPreviousSearchMovies();
     return data;
   }
 
   @override
-  Future<void> cacheData(MoviesResult data) async {
+  Future<void> cacheData(Result data) async {
     await _hiveStorage.setPreviousSearchMovies(data);
   }
 }

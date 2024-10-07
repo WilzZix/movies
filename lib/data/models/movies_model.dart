@@ -1,6 +1,6 @@
 class MoviesResult {
   int? page;
-  List<Results>? results;
+  List<Result>? results;
   int? totalPages;
   int? totalResults;
 
@@ -9,9 +9,9 @@ class MoviesResult {
   MoviesResult.fromJson(Map<String, dynamic> json) {
     page = json['page'];
     if (json['results'] != null) {
-      results = <Results>[];
+      results = <Result>[];
       json['results'].forEach((v) {
-        results!.add(Results.fromJson(v));
+        results!.add(Result.fromJson(v));
       });
     }
     totalPages = json['total_pages'];
@@ -39,7 +39,7 @@ class MoviesResult {
   }
 }
 
-class Results {
+class Result {
   String? backdropPath;
   int? id;
   String? title;
@@ -61,7 +61,7 @@ class Results {
 
   //List<String>? originCountry;
 
-  Results({
+  Result({
     this.backdropPath,
     this.id,
     this.title,
@@ -83,7 +83,7 @@ class Results {
     //this.originCountry,
   });
 
-  Results.fromJson(Map<String, dynamic> json) {
+  Result.fromJson(Map<String, dynamic> json) {
     backdropPath = json['backdrop_path'];
     id = json['id'];
     title = json['title'];

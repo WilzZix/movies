@@ -29,7 +29,7 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
   LocalDataSource localDataSource = LocalDataSource();
   int page = 1;
   String keyword = '';
-  List<Results>? results = [];
+  List<Result>? results = [];
 
   FutureOr<void> _getTopRatedMovies(
       GetTopRatedMoviesEvent event, Emitter<MoviesState> emit) async {
@@ -103,9 +103,9 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
   }
 
   FutureOr<void> _getPreviousSearchResult(
-      GetPreviousSearchResult event, Emitter<MoviesState> emit) {
-    results!.clear();
-    emit(SearchMovieLoadedState(MoviesResult(results: results)));
+      GetPreviousSearchResult event, Emitter<MoviesState> emit) async {
+    emit(LastSearchedMovieLoadedState(
+        await localDataSource.getPreviousSearchMovies()));
   }
 
   Future<void> _addSearchResultMovieToPreviousSearchResult(

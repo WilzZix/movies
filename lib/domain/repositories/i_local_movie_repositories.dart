@@ -1,7 +1,7 @@
 import 'package:movies/data/models/movies_model.dart';
 
 abstract class ILocalMovieRepository {
-  Future<List<MoviesResult>?> getPreviousSearchMovies();
+  Future<Result> getPreviousSearchMovies();
 
-  Future<void> cacheData(MoviesResult data);
+  Future<void> cacheData(Result data);
 }

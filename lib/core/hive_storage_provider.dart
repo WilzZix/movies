@@ -12,11 +12,12 @@ class HiveStorage {
 
   late final Box _mainStorage = Hive.box(HiveBoxNameUtils.mainStorage);
 
-  Future<void> setPreviousSearchMovies(MoviesResult result) async {
+  Future<void> setPreviousSearchMovies(Result result) async {
+
     await _mainStorage.put('previous_search', result);
   }
 
-  Future<List<MoviesResult>> getPreviousSearchMovies() async {
+  Future<Result> getPreviousSearchMovies() async {
     return await _mainStorage.get('previous_search');
   }
 
