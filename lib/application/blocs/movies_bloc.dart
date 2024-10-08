@@ -6,6 +6,7 @@ import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
 
 import 'package:movies/data/datasources/network_data_source/network_movies_datasource.dart';
+import 'package:movies/data/models/movie_videos.dart';
 import 'package:movies/data/models/movies_detail_model.dart';
 import 'package:movies/data/models/movies_model.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -71,7 +72,9 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
     emit(MovieDetailsLoadingState());
     try {
       final result = await dataSource.getMovieDetails(movieId: event.movieId);
-      emit(MovieDetailsLoadedState(result));
+      List<MovieVideos> movieVideos =
+          await dataSource.getMovieVideos(movieId: event.movieId);
+      emit(MovieDetailsLoadedState((result, movieVideos[0].key!)));
     } catch (e) {
       emit(MoviesDetailsLoadingErrorState(e.toString()));
     }

@@ -2,6 +2,8 @@ import 'package:movies/data/models/actor_model.dart';
 import 'package:movies/data/models/movies_detail_model.dart';
 import 'package:movies/data/models/movies_model.dart';
 
+import '../../data/models/movie_videos.dart';
+
 abstract class IMoviesRepository {
   Future<MoviesResult> getTopRatedMovies();
 
@@ -10,6 +12,8 @@ abstract class IMoviesRepository {
   Future<MoviesResult> getPopularMovies();
 
   Future<MovieDetailsPage> getMovieDetails({required int movieId});
+
+  Future<List<MovieVideos>> getMovieVideos({required int movieId});
 
   Future<List<ActorModel>> fetchMovieActor({required int movieId});
 

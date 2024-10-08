@@ -54,7 +54,7 @@ class PopularMoviesLoadErrorState extends MoviesState {
 class MovieDetailsLoadingState extends MoviesState {}
 
 class MovieDetailsLoadedState extends MoviesState {
-  final MovieDetailsPage data;
+  final (MovieDetailsPage, String) data;
 
   MovieDetailsLoadedState(this.data);
 }
