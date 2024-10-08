@@ -8,7 +8,7 @@ class MovieListItem extends StatelessWidget {
     required this.moviesResult,
   });
 
-  final Results moviesResult;
+  final Result moviesResult;
 
   @override
   Widget build(BuildContext context) {

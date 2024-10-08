@@ -1,10 +1,14 @@
 import 'dart:async';
+import 'dart:convert';
+import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
 import 'package:meta/meta.dart';
+
 import 'package:movies/data/datasources/network_data_source/network_movies_datasource.dart';
 import 'package:movies/data/models/movies_detail_model.dart';
 import 'package:movies/data/models/movies_model.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'movies_event.dart';
 
@@ -19,12 +23,15 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
     on<SearchMovieEvent>(_searchMovie);
     on<LoadMoreEvent>(_loadMore);
     on<GetPreviousSearchResult>(_getPreviousSearchResult);
+    on<EddMovieToPreviousSearchResult>(
+        _addSearchResultMovieToPreviousSearchResult);
   }
 
   NetworkMoviesDataSource dataSource = NetworkMoviesDataSource();
+
   int page = 1;
   String keyword = '';
-  List<Results>? results = [];
+  List<Result>? results = [];
 
   FutureOr<void> _getTopRatedMovies(
       GetTopRatedMoviesEvent event, Emitter<MoviesState> emit) async {
@@ -98,8 +105,25 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
   }
 
   FutureOr<void> _getPreviousSearchResult(
-      GetPreviousSearchResult event, Emitter<MoviesState> emit) {
-    results!.clear();
-    emit(SearchMovieLoadedState(MoviesResult(results: results)));
+      GetPreviousSearchResult event, Emitter<MoviesState> emit) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String>? movieJsonList =
+        prefs.getStringList('movie_results')!.reversed.toList();
+
+    emit(LastSearchedMovieLoadedState(movieJsonList
+        .map((movieJson) => Result.fromJson(jsonDecode(movieJson)))
+        .toList()));
+  }
+
+  Future<void> _addSearchResultMovieToPreviousSearchResult(
+      EddMovieToPreviousSearchResult event, Emitter<MoviesState> emit) async {
+    try {
+      final prefs = await SharedPreferences.getInstance();
+      List<String> movieJsonList = prefs.getStringList('movie_results') ?? [];
+      movieJsonList.add(jsonEncode(event.searchedMovie.toJson()));
+      await prefs.setStringList('movie_results', movieJsonList);
+    } catch (e) {
+      log(e.toString());
+    }
   }
 }

@@ -79,3 +79,9 @@ class SearchMovieLoadErrorState extends MoviesState {
 
   SearchMovieLoadErrorState(this.msg);
 }
+
+class LastSearchedMovieLoadedState extends MoviesState {
+  final List<Result> data;
+
+  LastSearchedMovieLoadedState(this.data);
+}

@@ -12,7 +12,7 @@ class PopularMovieItem extends StatelessWidget {
     required this.movieResult,
   });
 
-  final Results movieResult;
+  final Result movieResult;
 
   @override
   Widget build(BuildContext context) {

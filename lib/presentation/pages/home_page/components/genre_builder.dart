@@ -11,7 +11,7 @@ class GenreBuilder extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 20,
+      height: 30,
       child: ListView.builder(
           itemCount: genreId.length,
           scrollDirection: Axis.horizontal,
