@@ -20,6 +20,13 @@ class _SearchPageState extends State<SearchPage> {
   ScrollController scrollController = ScrollController();
 
   @override
+  void dispose() {
+    super.dispose();
+    scrollController.dispose();
+    controller.dispose();
+  }
+
+  @override
   void initState() {
     super.initState();
     controller.addListener(searchMovie);
@@ -242,7 +249,7 @@ class _SearchPageState extends State<SearchPage> {
                               EddMovieToPreviousSearchResult(
                                   state.data[index]));
                           context.pushNamed(MovieDetailPage.tag,
-                              extra: state.data);
+                              extra: state.data[index].id);
                         },
                         child: Container(
                           margin: const EdgeInsets.all(8),
