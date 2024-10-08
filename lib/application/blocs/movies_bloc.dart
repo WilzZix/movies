@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:bloc/bloc.dart';
@@ -105,16 +106,18 @@ class MoviesBloc extends Bloc<MoviesEvent, MoviesState> {
 
   FutureOr<void> _getPreviousSearchResult(
       GetPreviousSearchResult event, Emitter<MoviesState> emit) async {
-    var prefService = await SharedPreferences.getInstance();
-    emit(LastSearchedMovieLoadedState(
-        await prefService.getString('previousSearch') as Result));
+    final prefs = await SharedPreferences.getInstance();
+    String? movieJson = prefs.getString('movie_result');
+    Map<String, dynamic> movieMap = jsonDecode(movieJson!);
+    emit(LastSearchedMovieLoadedState(Result.fromJson(movieMap)));
   }
 
   Future<void> _addSearchResultMovieToPreviousSearchResult(
       EddMovieToPreviousSearchResult event, Emitter<MoviesState> emit) async {
     try {
-      var prefs = await SharedPreferences.getInstance();
-      prefs.setString('previousSearch', event.searchedMovie as String);
+      final prefs = await SharedPreferences.getInstance();
+      String movieJson = jsonEncode(event.searchedMovie.toJson());
+      await prefs.setString('movie_result', movieJson);
     } catch (e) {
       log(e.toString());
     }

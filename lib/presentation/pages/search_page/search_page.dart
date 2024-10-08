@@ -24,6 +24,7 @@ class _SearchPageState extends State<SearchPage> {
     super.initState();
     controller.addListener(searchMovie);
     scrollController.addListener(_loadMore);
+    BlocProvider.of<MoviesBloc>(context).add(GetPreviousSearchResult());
   }
 
   void searchMovie() {
@@ -91,7 +92,8 @@ class _SearchPageState extends State<SearchPage> {
           ),
           BlocBuilder<MoviesBloc, MoviesState>(
             buildWhen: (context, state) {
-              return state is SearchMovieLoadedState ||state is LastSearchedMovieLoadedState;
+              return state is SearchMovieLoadedState ||
+                  state is LastSearchedMovieLoadedState;
             },
             builder: (context, state) {
               if (state is SearchMovieLoadingState) {
