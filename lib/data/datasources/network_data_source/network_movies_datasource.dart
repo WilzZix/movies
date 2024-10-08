@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:movies/core/network_provider.dart';
 import 'package:movies/data/models/actor_model.dart';
+import 'package:movies/data/models/movie_videos.dart';
 import 'package:movies/data/models/movies_detail_model.dart';
 import 'package:movies/data/models/movies_model.dart';
 import 'package:movies/domain/repositories/i_movies_repository.dart';
@@ -49,5 +50,12 @@ class NetworkMoviesDataSource implements IMoviesRepository {
         '${IRoutes.search}/movie?query=$keyword&include_adult=false',
         queryParameters: queryParams);
     return MoviesResult.fromJson(response.data ?? {});
+  }
+
+  @override
+  Future<List<MovieVideos>> getMovieVideos({required int movieId}) async {
+    final Response response =
+        await NetworkProvider.dio.get('/movie/$movieId/videos');
+    return MovieVideos.fetchData(response.data ?? {});
   }
 }
