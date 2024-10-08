@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movies/application/blocs/movies_bloc.dart';
 import 'package:movies/core/utils/extensions.dart';
@@ -18,6 +19,7 @@ class SearchPage extends StatefulWidget {
 class _SearchPageState extends State<SearchPage> {
   TextEditingController controller = TextEditingController();
   ScrollController scrollController = ScrollController();
+  bool dontScroll = false;
 
   @override
   void dispose() {
@@ -35,6 +37,7 @@ class _SearchPageState extends State<SearchPage> {
   }
 
   void searchMovie() {
+    dontScroll = false;
     if (controller.text.isNotEmpty) {
       BlocProvider.of<MoviesBloc>(context)
           .add(SearchMovieEvent(controller.text));
@@ -51,7 +54,8 @@ class _SearchPageState extends State<SearchPage> {
 
   void _loadMore() {
     if (scrollController.position.pixels ==
-        scrollController.position.maxScrollExtent) {
+            scrollController.position.maxScrollExtent &&
+        !dontScroll) {
       BlocProvider.of<MoviesBloc>(context).add(LoadMoreEvent());
     }
   }
@@ -62,11 +66,14 @@ class _SearchPageState extends State<SearchPage> {
       backgroundColor: Colors.black,
       appBar: AppBar(
         centerTitle: false,
-        actions: const [
-          Icon(
-            Icons.manage_search_outlined,
-            color: Colors.white,
-          ),
+        actions: [
+          SizedBox(
+              height: 20,
+              width: 20,
+              child: SvgPicture.asset(
+                'assets/icons/filter-6535.svg',
+                color: Colors.white,
+              ))
         ],
         backgroundColor: Colors.black,
         title: const Text(
@@ -239,128 +246,149 @@ class _SearchPageState extends State<SearchPage> {
                 );
               }
               if (state is LastSearchedMovieLoadedState) {
+                dontScroll = true;
                 return SliverList(
                   delegate: SliverChildBuilderDelegate(
                     childCount: state.data.length,
                     (context, index) {
-                      return GestureDetector(
-                        onTap: () {
-                          BlocProvider.of<MoviesBloc>(context).add(
-                              EddMovieToPreviousSearchResult(
-                                  state.data[index]));
-                          context.pushNamed(MovieDetailPage.tag,
-                              extra: state.data[index].id);
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.all(8),
-                          padding: const EdgeInsets.all(8),
-                          decoration: const BoxDecoration(
-                            color: Colors.grey,
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(16),
-                            ),
+                      return Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const SizedBox(
+                            height: 8,
                           ),
-                          child: Row(
-                            children: [
-                              SizedBox(
-                                height: 200,
-                                width: 100,
-                                child: state.data[index].backdropPath != null
-                                    ? Image(
-                                        fit: BoxFit.cover,
-                                        image: NetworkImage(
-                                          'https://image.tmdb.org/t/p/w500${state.data[index].posterPath!}',
-                                        ),
-                                      )
-                                    : null,
+                          if (index == 0)
+                            const Padding(
+                              padding: EdgeInsets.all(8.0),
+                              child: Text(
+                                'Previous Search',
+                                style: TextStyle(color: Colors.white),
                               ),
-                              const SizedBox(
-                                width: 16,
+                            ),
+                          GestureDetector(
+                            onTap: () {
+                              BlocProvider.of<MoviesBloc>(context).add(
+                                  EddMovieToPreviousSearchResult(
+                                      state.data[index]));
+                              context.pushNamed(MovieDetailPage.tag,
+                                  extra: state.data[index].id);
+                            },
+                            child: Container(
+                              margin: const EdgeInsets.all(8),
+                              padding: const EdgeInsets.all(8),
+                              decoration: const BoxDecoration(
+                                color: Colors.grey,
+                                borderRadius: BorderRadius.all(
+                                  Radius.circular(16),
+                                ),
                               ),
-                              Column(
-                                mainAxisSize: MainAxisSize.max,
-                                crossAxisAlignment: CrossAxisAlignment.start,
+                              child: Row(
                                 children: [
                                   SizedBox(
+                                    height: 200,
                                     width: 100,
-                                    height: 20,
-                                    child: ListView.builder(
-                                      itemCount:
-                                          state.data[index].genreIds!.length,
-                                      scrollDirection: Axis.vertical,
-                                      itemBuilder:
-                                          (BuildContext context, int index) {
-                                        return GenreBuilder(
-                                          genreId: state.data[index].genreIds!,
-                                        );
-                                      },
-                                    ),
+                                    child:
+                                        state.data[index].backdropPath != null
+                                            ? Image(
+                                                fit: BoxFit.cover,
+                                                image: NetworkImage(
+                                                  'https://image.tmdb.org/t/p/w500${state.data[index].posterPath!}',
+                                                ),
+                                              )
+                                            : null,
                                   ),
                                   const SizedBox(
-                                    height: 16,
+                                    width: 16,
                                   ),
-                                  Text(
-                                    softWrap: true,
-                                    overflow: TextOverflow.ellipsis,
-                                    state.data[index].originalTitle!,
-                                    style: const TextStyle(
-                                      color: Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                  const SizedBox(
-                                    height: 16,
-                                  ),
-                                  Row(
+                                  Column(
+                                    mainAxisSize: MainAxisSize.max,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
                                     children: [
-                                      TextContainerWidget(
-                                        title: !state.data[index].adult!
-                                            ? '17+'
-                                            : 'GP',
+                                      SizedBox(
+                                        width: 100,
+                                        height: 20,
+                                        child: ListView.builder(
+                                          itemCount: state
+                                              .data[index].genreIds!.length,
+                                          scrollDirection: Axis.vertical,
+                                          itemBuilder: (BuildContext context,
+                                              int index) {
+                                            return GenreBuilder(
+                                              genreId:
+                                                  state.data[index].genreIds!,
+                                            );
+                                          },
+                                        ),
                                       ),
                                       const SizedBox(
-                                        width: 8,
+                                        height: 16,
                                       ),
-                                      TextContainerWidget(
-                                        title: state.data[index].releaseDate ??
-                                            '1999-07-07'
-                                                .formatedYearOfDateTime(),
+                                      Text(
+                                        softWrap: true,
+                                        overflow: TextOverflow.ellipsis,
+                                        state.data[index].originalTitle!,
+                                        style: const TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
-                                      const SizedBox(height: 32)
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 32,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                        MainAxisAlignment.spaceBetween,
-                                    children: [
+                                      const SizedBox(
+                                        height: 16,
+                                      ),
                                       Row(
                                         children: [
-                                          const Icon(
-                                            Icons.star,
-                                            color: Colors.amber,
+                                          TextContainerWidget(
+                                            title: !state.data[index].adult!
+                                                ? '17+'
+                                                : 'GP',
                                           ),
                                           const SizedBox(
-                                            width: 4,
+                                            width: 8,
                                           ),
-                                          Text(
-                                            '${state.data[index].voteAverage!}',
-                                            style: const TextStyle(
-                                                color: Colors.white),
+                                          TextContainerWidget(
+                                            title: state
+                                                    .data[index].releaseDate ??
+                                                '1999-07-07'
+                                                    .formatedYearOfDateTime(),
                                           ),
+                                          const SizedBox(height: 32)
                                         ],
                                       ),
-                                      const SizedBox(width: 55),
-                                      const AddToWatchListWidget()
+                                      const SizedBox(
+                                        height: 32,
+                                      ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Row(
+                                            children: [
+                                              const Icon(
+                                                Icons.star,
+                                                color: Colors.amber,
+                                              ),
+                                              const SizedBox(
+                                                width: 4,
+                                              ),
+                                              Text(
+                                                '${state.data[index].voteAverage!}',
+                                                style: const TextStyle(
+                                                    color: Colors.white),
+                                              ),
+                                            ],
+                                          ),
+                                          const SizedBox(width: 55),
+                                          const AddToWatchListWidget()
+                                        ],
+                                      )
                                     ],
                                   )
                                 ],
-                              )
-                            ],
+                              ),
+                            ),
                           ),
-                        ),
+                        ],
                       );
                     },
                   ),
