@@ -232,119 +232,130 @@ class _SearchPageState extends State<SearchPage> {
                 );
               }
               if (state is LastSearchedMovieLoadedState) {
-                return SliverToBoxAdapter(
-                  child: GestureDetector(
-                    onTap: () {
-                      BlocProvider.of<MoviesBloc>(context)
-                          .add(EddMovieToPreviousSearchResult(state.data));
-                      context.pushNamed(MovieDetailPage.tag, extra: state.data);
-                    },
-                    child: Container(
-                      margin: const EdgeInsets.all(8),
-                      padding: const EdgeInsets.all(8),
-                      decoration: const BoxDecoration(
-                        color: Colors.grey,
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(16),
-                        ),
-                      ),
-                      child: Row(
-                        children: [
-                          SizedBox(
-                            height: 200,
-                            width: 100,
-                            child: state.data.backdropPath != null
-                                ? Image(
-                                    fit: BoxFit.cover,
-                                    image: NetworkImage(
-                                      'https://image.tmdb.org/t/p/w500${state.data.posterPath!}',
-                                    ),
-                                  )
-                                : null,
+                return SliverList(
+                  delegate: SliverChildBuilderDelegate(
+                    childCount: state.data.length,
+                    (context, index) {
+                      return GestureDetector(
+                        onTap: () {
+                          BlocProvider.of<MoviesBloc>(context).add(
+                              EddMovieToPreviousSearchResult(
+                                  state.data[index]));
+                          context.pushNamed(MovieDetailPage.tag,
+                              extra: state.data);
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.all(8),
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: Colors.grey,
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(16),
+                            ),
                           ),
-                          const SizedBox(
-                            width: 16,
-                          ),
-                          Column(
-                            mainAxisSize: MainAxisSize.max,
-                            crossAxisAlignment: CrossAxisAlignment.start,
+                          child: Row(
                             children: [
                               SizedBox(
+                                height: 200,
                                 width: 100,
-                                height: 20,
-                                child: ListView.builder(
-                                  itemCount: state.data.genreIds!.length,
-                                  scrollDirection: Axis.vertical,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return GenreBuilder(
-                                      genreId: state.data.genreIds!,
-                                    );
-                                  },
-                                ),
+                                child: state.data[index].backdropPath != null
+                                    ? Image(
+                                        fit: BoxFit.cover,
+                                        image: NetworkImage(
+                                          'https://image.tmdb.org/t/p/w500${state.data[index].posterPath!}',
+                                        ),
+                                      )
+                                    : null,
                               ),
                               const SizedBox(
-                                height: 16,
+                                width: 16,
                               ),
-                              Text(
-                                softWrap: true,
-                                overflow: TextOverflow.ellipsis,
-                                state.data.originalTitle!,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              const SizedBox(
-                                height: 16,
-                              ),
-                              Row(
+                              Column(
+                                mainAxisSize: MainAxisSize.max,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  TextContainerWidget(
-                                    title: !state.data.adult! ? '17+' : 'GP',
+                                  SizedBox(
+                                    width: 100,
+                                    height: 20,
+                                    child: ListView.builder(
+                                      itemCount:
+                                          state.data[index].genreIds!.length,
+                                      scrollDirection: Axis.vertical,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return GenreBuilder(
+                                          genreId: state.data[index].genreIds!,
+                                        );
+                                      },
+                                    ),
                                   ),
                                   const SizedBox(
-                                    width: 8,
+                                    height: 16,
                                   ),
-                                  TextContainerWidget(
-                                    title: state.data.releaseDate ??
-                                        '1999-07-07'.formatedYearOfDateTime(),
+                                  Text(
+                                    softWrap: true,
+                                    overflow: TextOverflow.ellipsis,
+                                    state.data[index].originalTitle!,
+                                    style: const TextStyle(
+                                      color: Colors.white,
+                                      fontWeight: FontWeight.bold,
+                                    ),
                                   ),
-                                  const SizedBox(height: 32)
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 32,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
+                                  const SizedBox(
+                                    height: 16,
+                                  ),
                                   Row(
                                     children: [
-                                      const Icon(
-                                        Icons.star,
-                                        color: Colors.amber,
+                                      TextContainerWidget(
+                                        title: !state.data[index].adult!
+                                            ? '17+'
+                                            : 'GP',
                                       ),
                                       const SizedBox(
-                                        width: 4,
+                                        width: 8,
                                       ),
-                                      Text(
-                                        '${state.data.voteAverage!}',
-                                        style: const TextStyle(
-                                            color: Colors.white),
+                                      TextContainerWidget(
+                                        title: state.data[index].releaseDate ??
+                                            '1999-07-07'
+                                                .formatedYearOfDateTime(),
                                       ),
+                                      const SizedBox(height: 32)
                                     ],
                                   ),
-                                  const SizedBox(width: 55),
-                                  const AddToWatchListWidget()
+                                  const SizedBox(
+                                    height: 32,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                        MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Icon(
+                                            Icons.star,
+                                            color: Colors.amber,
+                                          ),
+                                          const SizedBox(
+                                            width: 4,
+                                          ),
+                                          Text(
+                                            '${state.data[index].voteAverage!}',
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          ),
+                                        ],
+                                      ),
+                                      const SizedBox(width: 55),
+                                      const AddToWatchListWidget()
+                                    ],
+                                  )
                                 ],
                               )
                             ],
-                          )
-                        ],
-                      ),
-                    ),
+                          ),
+                        ),
+                      );
+                    },
                   ),
                 );
               }
