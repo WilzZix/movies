@@ -1,3 +1,5 @@
+import 'movies_model.dart';
+
 class ActorModel {
   bool? adult;
   int? gender;
@@ -65,5 +67,9 @@ class ActorModel {
       list.add(ActorModel.fromJson(value));
     });
     return list;
+  }
+
+  Future<List<Result>> getActorPlayedMovie() async {
+    return [];
   }
 }

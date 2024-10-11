@@ -1,7 +1,6 @@
-import 'dart:developer';
 
 import 'package:dio/dio.dart';
-import 'package:flutter/foundation.dart';
+import 'package:movies/core/utils/interceptor.dart';
 
 class NetworkProvider {
   static late Dio dio;
@@ -17,23 +16,26 @@ class NetworkProvider {
         },
         queryParameters: {'language': 'en-EN', 'page': 1},
       ),
-    )..interceptors.addAll([
-        if (kDebugMode)
-          LogInterceptor(
-            responseHeader: true,
-            responseBody: true,
-            requestBody: true,
-            logPrint: (error) => log(
-              error.toString(),
-            ),
-          ),
-      ]);
+    )..interceptors.addAll(
+        [
+          DioInterceptor(),
+          // if (kDebugMode)
+          //   LogInterceptor(
+          //     responseHeader: true,
+          //     responseBody: true,
+          //     requestBody: true,
+          //     logPrint: (error) => log(
+          //       error.toString(),
+          //     ),
+          //   ),
+        ],
+      );
   }
 }
 
 class IRoutes {
   static const String baseUrl = 'https://api.themoviedb.org/3';
-  static const String topRated = '/movie/top_rated';
+  static const String topRated = '/movie/top_rate';
   static const String popularMovies = '/movie/popular';
   static const String upcomingMovies = '/movie/upcoming';
   static const String search = '/search';
