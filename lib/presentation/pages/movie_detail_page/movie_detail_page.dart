@@ -51,9 +51,10 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
         builder: (context, state) {
           if (state is MovieDetailsLoadedState) {
             _controller = YoutubePlayerController(
-              initialVideoId: state.data.$2,
-              flags: YoutubePlayerFlags(autoPlay: false,)
-            );
+                initialVideoId: state.data.$2,
+                flags: const YoutubePlayerFlags(
+                  autoPlay: false,
+                ));
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -203,6 +204,15 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       if (state is MovieActorsLoadedState) {
                         return MoviePersonsWidget(
                           data: state.data,
+                        );
+                      }
+                      if (state is MovieActorLoadingErrorState) {
+                        return Center(
+                          child: Text(
+                            state.msg,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 24),
+                          ),
                         );
                       }
                       return const SizedBox();

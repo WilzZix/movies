@@ -1,5 +1,7 @@
+import 'dart:developer';
 
 import 'package:dio/dio.dart';
+import 'package:flutter/foundation.dart';
 import 'package:movies/core/utils/interceptor.dart';
 
 class NetworkProvider {
@@ -19,15 +21,15 @@ class NetworkProvider {
     )..interceptors.addAll(
         [
           DioInterceptor(),
-          // if (kDebugMode)
-          //   LogInterceptor(
-          //     responseHeader: true,
-          //     responseBody: true,
-          //     requestBody: true,
-          //     logPrint: (error) => log(
-          //       error.toString(),
-          //     ),
-          //   ),
+          if (kDebugMode)
+            LogInterceptor(
+              responseHeader: true,
+              responseBody: true,
+              requestBody: true,
+              logPrint: (error) => log(
+                error.toString(),
+              ),
+            ),
         ],
       );
   }
@@ -35,7 +37,7 @@ class NetworkProvider {
 
 class IRoutes {
   static const String baseUrl = 'https://api.themoviedb.org/3';
-  static const String topRated = '/movie/top_rate';
+  static const String topRated = '/movie/top_rated';
   static const String popularMovies = '/movie/popular';
   static const String upcomingMovies = '/movie/upcoming';
   static const String search = '/search';
