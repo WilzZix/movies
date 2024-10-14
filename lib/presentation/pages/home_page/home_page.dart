@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -34,6 +36,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
     const FavouritePage(),
     const SettingsPage(),
   ];
+
   int selectedItem = 0;
 
   @override
@@ -97,6 +100,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
+    log('line 18  ${MediaQuery.of(context).size.width}');
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(
@@ -189,7 +193,8 @@ class _HomePageState extends State<HomePage> {
                     return Center(
                       child: Text(
                         state.msg,
-                        style: const TextStyle(color: Colors.white,fontSize: 24),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 24),
                       ),
                     );
                   }
@@ -206,7 +211,8 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 16),
               BlocBuilder<MoviesBloc, MoviesState>(
                 buildWhen: (context, state) {
-                  return state is TopRatedMoviesLoadedState||state is TopRatedMoviesLoadingErrorState;
+                  return state is TopRatedMoviesLoadedState ||
+                      state is TopRatedMoviesLoadingErrorState;
                 },
                 builder: (context, state) {
                   if (state is TopRatedMoviesLoadingState) {
@@ -216,7 +222,8 @@ class _HomePageState extends State<HomePage> {
                     return Center(
                       child: Text(
                         state.msg,
-                        style: const TextStyle(color: Colors.white,fontSize: 24),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 24),
                       ),
                     );
                   }

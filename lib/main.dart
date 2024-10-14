@@ -38,7 +38,9 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         color: Colors.black,
-        routerConfig: AppRouter().router,
+        routerConfig: MediaQuery.of(context).size.width >= 1280
+            ? AppRouter().tabletRouter
+            : AppRouter().router,
         theme: ThemeData(
           bottomNavigationBarTheme: const BottomNavigationBarThemeData(
               backgroundColor: Colors.black,
