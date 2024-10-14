@@ -34,6 +34,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
     const FavouritePage(),
     const SettingsPage(),
   ];
+
   int selectedItem = 0;
 
   @override
@@ -189,7 +190,8 @@ class _HomePageState extends State<HomePage> {
                     return Center(
                       child: Text(
                         state.msg,
-                        style: const TextStyle(color: Colors.white),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 24),
                       ),
                     );
                   }
@@ -206,7 +208,8 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 16),
               BlocBuilder<MoviesBloc, MoviesState>(
                 buildWhen: (context, state) {
-                  return state is TopRatedMoviesLoadedState;
+                  return state is TopRatedMoviesLoadedState ||
+                      state is TopRatedMoviesLoadingErrorState;
                 },
                 builder: (context, state) {
                   if (state is TopRatedMoviesLoadingState) {
@@ -216,7 +219,8 @@ class _HomePageState extends State<HomePage> {
                     return Center(
                       child: Text(
                         state.msg,
-                        style: const TextStyle(color: Colors.white),
+                        style:
+                            const TextStyle(color: Colors.white, fontSize: 24),
                       ),
                     );
                   }

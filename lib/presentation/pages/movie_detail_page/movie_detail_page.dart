@@ -6,6 +6,7 @@ import 'package:movies/application/blocs/movies_bloc.dart';
 import 'package:movies/core/utils/extensions.dart';
 import 'package:movies/data/models/actor_model.dart';
 import 'package:movies/presentation/pages/home_page/components/genre_builder.dart';
+import 'package:youtube_player_flutter/youtube_player_flutter.dart';
 
 import '../home_page/components/text_container_widget.dart';
 
@@ -20,6 +21,9 @@ class MovieDetailPage extends StatefulWidget {
 }
 
 class _MovieDetailPageState extends State<MovieDetailPage> {
+  late YoutubePlayerController _controller;
+  String initialVideoId = '';
+
   @override
   void initState() {
     super.initState();
@@ -46,26 +50,16 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
       body: BlocBuilder<MoviesBloc, MoviesState>(
         builder: (context, state) {
           if (state is MovieDetailsLoadedState) {
+            _controller = YoutubePlayerController(
+                initialVideoId: state.data.$2,
+                flags: const YoutubePlayerFlags(
+                  autoPlay: false,
+                ));
             return SingleChildScrollView(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Container(
-                    height: 200,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(16),
-                      image: DecorationImage(
-                        fit: BoxFit.cover,
-                        image: NetworkImage(
-                          'https://image.tmdb.org/t/p/w500${state.data
-                              .backdropPath}',
-                        ),
-                      ),
-                    ),
-                    child: const Center(
-                      child: Icon(Icons.play_circle_outline),
-                    ),
-                  ),
+                  YoutubePlayer(controller: _controller),
                   const SizedBox(
                     height: 8,
                   ),
@@ -73,11 +67,12 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     width: 100,
                     height: 20,
                     child: ListView.builder(
-                      itemCount: state.data.genres!.length,
+                      itemCount: state.data.$1.genres!.length,
                       scrollDirection: Axis.vertical,
                       itemBuilder: (BuildContext context, int index) {
-                        List<int> genreIds = state.data.genres!.map((
-                            genre) => genre.id!).toList();
+                        List<int> genreIds = state.data.$1.genres!
+                            .map((genre) => genre.id!)
+                            .toList();
                         return GenreBuilder(
                           genreId: genreIds,
                         );
@@ -88,7 +83,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     height: 8,
                   ),
                   Text(
-                    state.data.originalTitle!,
+                    state.data.$1.originalTitle!,
                     style: const TextStyle(
                       fontSize: 24,
                       color: Colors.white,
@@ -101,13 +96,14 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                   Row(
                     children: [
                       TextContainerWidget(
-                        title: !state.data.adult! ? '17+' : 'GP',
+                        title: !state.data.$1.adult! ? '17+' : 'GP',
                       ),
                       const SizedBox(
                         width: 8,
                       ),
                       TextContainerWidget(
-                        title: state.data.releaseDate!.formatedYearOfDateTime(),
+                        title:
+                            state.data.$1.releaseDate!.formatedYearOfDateTime(),
                       ),
                       const SizedBox(height: 32)
                     ],
@@ -116,7 +112,7 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                     height: 8,
                   ),
                   Text(
-                    state.data.overview!,
+                    state.data.$1.overview!,
                     style: const TextStyle(
                       fontSize: 16,
                       color: Colors.white,
@@ -161,13 +157,13 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                           const SizedBox(
                             height: 8,
                           ),
-                          Text('${state.data.voteAverage}',
+                          Text('${state.data.$1.voteAverage}',
                               style: const TextStyle(color: Colors.white)),
                           const SizedBox(
                             height: 8,
                           ),
-                          StarRatingWidget(voteRating: state.data.voteAverage! /
-                              2)
+                          StarRatingWidget(
+                              voteRating: state.data.$1.voteAverage! / 2)
                         ],
                       ),
                       const VerticalDivider(
@@ -208,6 +204,15 @@ class _MovieDetailPageState extends State<MovieDetailPage> {
                       if (state is MovieActorsLoadedState) {
                         return MoviePersonsWidget(
                           data: state.data,
+                        );
+                      }
+                      if (state is MovieActorLoadingErrorState) {
+                        return Center(
+                          child: Text(
+                            state.msg,
+                            style: const TextStyle(
+                                color: Colors.white, fontSize: 24),
+                          ),
                         );
                       }
                       return const SizedBox();
@@ -301,8 +306,7 @@ class MoviePersonsWidget extends StatelessWidget {
                           fit: BoxFit.cover,
                           image: NetworkImage(data[index].profilePath == null
                               ? 'https://stock.adobe.com/uz/images/monochrome-icon/65772719'
-                              : 'https://image.tmdb.org/t/p/original${data[index]
-                              .profilePath!}'),
+                              : 'https://image.tmdb.org/t/p/original${data[index].profilePath!}'),
                         ),
                       ),
                     ),
