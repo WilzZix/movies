@@ -23,7 +23,7 @@ class PopularMovieItem extends StatelessWidget {
         image: DecorationImage(
           fit: BoxFit.cover,
           image: NetworkImage(
-            'https://image.tmdb.org/t/p/w500${movieResult.backdropPath}',
+            'https://image.tmdb.org/t/p/w1280${movieResult.backdropPath}',
           ),
         ),
       ),

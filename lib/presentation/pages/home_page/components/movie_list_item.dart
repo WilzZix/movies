@@ -20,7 +20,7 @@ class MovieListItem extends StatelessWidget {
           ClipRRect(
             borderRadius: BorderRadius.circular(8.0),
             child: Image.network(
-              'https://image.tmdb.org/t/p/w500${moviesResult.backdropPath!}',
+              'https://image.tmdb.org/t/p/w1280${moviesResult.backdropPath!}',
               width: 150,
               height: 198,
               fit: BoxFit.cover,

@@ -148,7 +148,7 @@ class _SearchPageState extends State<SearchPage> {
                                   ? Image(
                                       fit: BoxFit.cover,
                                       image: NetworkImage(
-                                        'https://image.tmdb.org/t/p/w500${state.data.results![index].posterPath!}',
+                                        'https://image.tmdb.org/t/p/w1280${state.data.results![index].posterPath!}',
                                       ),
                                     )
                                   : null,
@@ -292,7 +292,7 @@ class _SearchPageState extends State<SearchPage> {
                                             ? Image(
                                                 fit: BoxFit.cover,
                                                 image: NetworkImage(
-                                                  'https://image.tmdb.org/t/p/w500${state.data[index].posterPath!}',
+                                                  'https://image.tmdb.org/t/p/w1280${state.data[index].posterPath!}',
                                                 ),
                                               )
                                             : null,
