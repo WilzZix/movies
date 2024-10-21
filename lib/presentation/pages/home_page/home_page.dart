@@ -15,7 +15,7 @@ class BottomNavigationPage extends StatefulWidget {
   const BottomNavigationPage({
     super.key,
   });
-
+static String tag = 'bottom-navigation';
   @override
   State<BottomNavigationPage> createState() => _BottomNavigationPageState();
 }
