@@ -9,3 +9,12 @@ class AuthWithFirebase extends AuthEvent {
 
   AuthWithFirebase(this.email, this.password);
 }
+
+class RegisterWithFirebase extends AuthEvent {
+  final String email;
+  final String password;
+
+  RegisterWithFirebase(this.email, this.password);
+}
+
+class GetUserNameAndSurname extends AuthEvent {}

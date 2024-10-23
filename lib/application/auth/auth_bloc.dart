@@ -11,6 +11,7 @@ part 'auth_state.dart';
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(AuthInitial()) {
     on<AuthWithFirebase>(_authWithFireBase);
+    on<RegisterWithFirebase>(_registerUserWithFirebase);
   }
 
   FirebaseAuthRepository repository = FirebaseAuthRepository();
@@ -26,6 +27,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(LoggedInState(userCredential));
     } catch (e) {
       emit(LoginErrorState());
+    }
+  }
+
+  Future<void> _registerUserWithFirebase(
+      RegisterWithFirebase event, Emitter<AuthState> emit) async {
+    try {
+      emit(RegisterLoadingState());
+      UserCredential userCredential = await repository.registration(
+          email: event.email, passwords: event.password);
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setBool('auth', true);
+      prefs.setBool('userIsRegistering', false);
+      emit(UserRegisterSuccessState(userCredential));
+    } catch (e) {
+      emit(UserRegisterFailureState());
     }
   }
 }

@@ -20,7 +20,16 @@ class FirebaseAuthRepository implements FireBaseAuth {
 
   @override
   Future registration(
-      {required String email, required String passwords}) async {}
+      {required String email, required String passwords}) async {
+    try {
+      final UserCredential userCredential = await FirebaseProvider.auth
+          .createUserWithEmailAndPassword(email: email, password: passwords);
+      return userCredential;
+    } catch (e) {
+      log(e.toString());
+      return;
+    }
+  }
 
   @override
   Future getUserCollection() async {

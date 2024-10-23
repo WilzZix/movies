@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:movies/application/auth/auth_bloc.dart';
 import 'package:movies/application/blocs/movies_bloc.dart';
 import 'package:movies/presentation/pages/favourite_page/favourite_page.dart';
 import 'package:movies/presentation/pages/home_page/components/movie_list_item.dart';
@@ -130,19 +131,23 @@ class _HomePageState extends State<HomePage> {
             ],
           )
         ],
-        title: const Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Welcome Back',
-              style: TextStyle(color: Colors.white),
-            ),
-            Text(
-              'John David.',
-              style:
-                  TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
-            ),
-          ],
+        title: BlocBuilder<AuthBloc, AuthState>(
+          builder: (context, state) {
+            return Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  'Welcome Back',
+                  style: TextStyle(color: Colors.white),
+                ),
+                Text(
+                  'John David.',
+                  style: TextStyle(
+                      color: Colors.white, fontWeight: FontWeight.bold),
+                ),
+              ],
+            );
+          },
         ),
       ),
       body: SingleChildScrollView(

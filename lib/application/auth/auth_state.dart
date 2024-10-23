@@ -5,6 +5,7 @@ sealed class AuthState {}
 
 final class AuthInitial extends AuthState {}
 
+///Log in
 class LoginLoadingState extends AuthState {}
 
 class LoggedInState extends AuthState {
@@ -14,3 +15,14 @@ class LoggedInState extends AuthState {
 }
 
 class LoginErrorState extends AuthState {}
+
+///Register
+class RegisterLoadingState extends AuthState {}
+
+class UserRegisterSuccessState extends AuthState {
+  final UserCredential userCredential;
+
+  UserRegisterSuccessState(this.userCredential);
+}
+
+class UserRegisterFailureState extends AuthState {}

@@ -3,21 +3,18 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 import 'package:movies/application/auth/auth_bloc.dart';
 import 'package:movies/core/utils/colors.dart';
-import 'package:movies/presentation/pages/auth_page/register_page.dart';
-import 'package:movies/presentation/pages/auth_page/web_auth_page.dart';
 import 'package:movies/presentation/pages/home_page/home_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-class AuthPage extends StatefulWidget {
-  const AuthPage({super.key});
+class RegisterPage extends StatefulWidget {
+  const RegisterPage({super.key});
 
-  static String tag = '/';
+  static String tag = '/register-page';
 
   @override
-  State<AuthPage> createState() => _AuthPageState();
+  State<RegisterPage> createState() => _RegisterPageState();
 }
 
-class _AuthPageState extends State<AuthPage> {
+class _RegisterPageState extends State<RegisterPage> {
   TextEditingController emailTextController = TextEditingController();
   TextEditingController passwordTextController = TextEditingController();
 
@@ -27,8 +24,8 @@ class _AuthPageState extends State<AuthPage> {
       backgroundColor: AppColors.tabletBackground,
       body: BlocListener<AuthBloc, AuthState>(
         listener: (context, state) {
-          if (state is LoggedInState) {
-            context.pushNamed(OAuthExample.tag);
+          if (state is UserRegisterSuccessState) {
+            context.pushNamed(BottomNavigationPage.tag);
           }
         },
         child: Padding(
@@ -36,7 +33,7 @@ class _AuthPageState extends State<AuthPage> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const Text('Login on your account'),
+              const Text('Register your account'),
               const SizedBox(
                 height: 16,
               ),
@@ -72,7 +69,7 @@ class _AuthPageState extends State<AuthPage> {
               GestureDetector(
                 onTap: () {
                   BlocProvider.of<AuthBloc>(context).add(
-                    AuthWithFirebase(
+                    RegisterWithFirebase(
                         emailTextController.text, passwordTextController.text),
                   );
                 },
@@ -83,30 +80,13 @@ class _AuthPageState extends State<AuthPage> {
                     decoration: const BoxDecoration(color: Colors.blue),
                     child: const Center(
                       child: Text(
-                        'LOGIN',
+                        'Register',
                         style: TextStyle(fontWeight: FontWeight.bold),
                       ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(height: 16),
-              const Divider(),
-              GestureDetector(
-                onTap: () async {
-                  final pref = await SharedPreferences.getInstance();
-                  pref.setBool('userIsRegistering', true);
-                  context.pushNamed(RegisterPage.tag);
-                },
-                child: const Center(
-                  child: Text(
-                    'Or register your account',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-              )
             ],
           ),
         ),
