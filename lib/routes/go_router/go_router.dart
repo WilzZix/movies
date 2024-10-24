@@ -10,7 +10,8 @@ class AppRouter {
     initialLocation: '/',
     routes: [
       GoRoute(
-        path: '/',
+        name: BottomNavigationPage.tag,
+        path: BottomNavigationPage.tag,
         builder: (context, state) => const BottomNavigationPage(),
         routes: [
           GoRoute(

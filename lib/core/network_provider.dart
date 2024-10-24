@@ -16,7 +16,10 @@ class NetworkProvider {
               ' Bearer eyJhbGciOiJIUzI1NiJ9.eyJhdWQiOiIyNmY2MmM3YmIxNTczNTM0ZjU4MWQwNDdlMjUwNjllOCIsIm5iZiI6MTcyNTY4MDEyMi43MDIyMjIsInN1YiI6IjVmODA5NzBiMDIxY2VlMDAzNTM5ZjQxOSIsInNjb3BlcyI6WyJhcGlfcmVhZCJdLCJ2ZXJzaW9uIjoxfQ.ccmjcAH00ac6jdcsg_IkK3IiG9yrHOSEOh7otuwcScE',
           'accept': 'application-json',
         },
-        queryParameters: {'language': 'en-EN', 'page': 1},
+        queryParameters: {
+          'language': 'en-EN',
+          'page': 1,
+        },
       ),
     )..interceptors.addAll(
         [
