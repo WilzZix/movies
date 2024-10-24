@@ -1,7 +1,6 @@
 import 'dart:convert';
 
 import 'package:bloc/bloc.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter_web_auth/flutter_web_auth.dart';
 import 'package:meta/meta.dart';
 import 'package:movies/data/datasources/network_data_source/firebase.dart';
@@ -14,45 +13,15 @@ part 'auth_state.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   AuthBloc() : super(AuthInitial()) {
-    on<AuthWithFirebase>(_authWithFireBase);
-    on<RegisterWithFirebase>(_registerUserWithFirebase);
-    on<SigninWithTMDB>(_signInTMDB);
+    on<SignInWithTMDB>(_signInTMDB);
+    on<CheckUserLogInStatus>(_checkUserLoginStatus);
   }
 
   FirebaseAuthRepository repository = FirebaseAuthRepository();
 
-  Future<void> _authWithFireBase(
-      AuthWithFirebase event, Emitter<AuthState> emit) async {
-    try {
-      emit(LoginLoadingState());
-      UserCredential userCredential =
-          await repository.login(email: event.email, password: event.password);
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setBool('auth', true);
-      emit(LoggedInState(userCredential));
-    } catch (e) {
-      emit(LoginErrorState());
-    }
-  }
-
-  Future<void> _registerUserWithFirebase(
-      RegisterWithFirebase event, Emitter<AuthState> emit) async {
-    try {
-      emit(RegisterLoadingState());
-      UserCredential userCredential = await repository.registration(
-          email: event.email, passwords: event.password);
-      final prefs = await SharedPreferences.getInstance();
-      prefs.setBool('auth', true);
-      prefs.setBool('userIsRegistering', false);
-      emit(UserRegisterSuccessState(userCredential));
-    } catch (e) {
-      emit(UserRegisterFailureState());
-    }
-  }
-
   Future<void> _signInTMDB(
-      SigninWithTMDB event, Emitter<AuthState> emit) async {
-    const clientId = '9eb3a3779d0206d18a39ac0f045f11c2';
+      SignInWithTMDB event, Emitter<AuthState> emit) async {
+    const clientId = '26f62c7bb1573534f581d047e25069e8';
     const redirectUri = 'your.app://callback';
     try {
       emit(SingInProgressState());
@@ -80,10 +49,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         body: json.encode({'request_token': token}),
         headers: {'Content-Type': 'application/json'},
       );
-
+      final prefs = await SharedPreferences.getInstance();
+      prefs.setBool('auth', true);
+      prefs.setString(
+          'sessionId', json.decode(sessionResponse.body)['session_id']);
       emit(SingInSuccessState(json.decode(sessionResponse.body)['session_id']));
     } catch (e) {
       emit(SignInFailureState(e.toString()));
     }
+  }
+
+  Future<void> _checkUserLoginStatus(
+      CheckUserLogInStatus event, Emitter<AuthState> emit) async {
+    final prefs = await SharedPreferences.getInstance();
+    emit(UserLoginStatus(prefs.getBool('auth') as bool));
   }
 }
