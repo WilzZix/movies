@@ -17,7 +17,7 @@ class BottomNavigationPage extends StatefulWidget {
     super.key,
   });
 
-  static String tag = '/bottom-navigation';
+  static String tag = '/';
 
   @override
   State<BottomNavigationPage> createState() => _BottomNavigationPageState();
@@ -76,7 +76,7 @@ class _BottomNavigationPageState extends State<BottomNavigationPage> {
           BottomNavigationBarItem(
             label: '',
             icon: Icon(
-              Icons.settings,
+              Icons.person,
               size: 35,
               color: Colors.white,
             ),

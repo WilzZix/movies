@@ -5,21 +5,12 @@ import 'package:movies/presentation/pages/auth_page/web_auth_page.dart';
 import 'package:movies/presentation/pages/home_page/home_page.dart';
 import 'package:movies/presentation/pages/movie_detail_page/movie_detail_page.dart';
 import 'package:movies/presentation/tablet/home_page.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AppRouter {
   AppRouter();
 
   final router = GoRouter(
     initialLocation: '/',
- /*   redirect: (context, state) async {
-      final prefs = await SharedPreferences.getInstance();
-      if (prefs.getBool('auth') != true) {
-        return '/';
-      } else {
-        return BottomNavigationPage.tag;
-      }
-    },*/
     routes: [
       GoRoute(
         name: BottomNavigationPage.tag,

@@ -5,13 +5,12 @@ import 'package:movies/application/auth/auth_bloc.dart';
 import 'package:movies/core/utils/colors.dart';
 import 'package:movies/presentation/pages/auth_page/register_page.dart';
 import 'package:movies/presentation/pages/auth_page/web_auth_page.dart';
-import 'package:movies/presentation/pages/home_page/home_page.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthPage extends StatefulWidget {
   const AuthPage({super.key});
 
-  static String tag = '/';
+  static String tag = '/auth';
 
   @override
   State<AuthPage> createState() => _AuthPageState();

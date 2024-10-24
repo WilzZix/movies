@@ -26,3 +26,18 @@ class UserRegisterSuccessState extends AuthState {
 }
 
 class UserRegisterFailureState extends AuthState {}
+
+///Sign in with TMDB
+class SingInProgressState extends AuthState {}
+
+class SingInSuccessState extends AuthState {
+  final String apiKay;
+
+  SingInSuccessState(this.apiKay);
+}
+
+class SignInFailureState extends AuthState {
+  final String msg;
+
+  SignInFailureState(this.msg);
+}

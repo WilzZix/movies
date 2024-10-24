@@ -17,4 +17,6 @@ class RegisterWithFirebase extends AuthEvent {
   RegisterWithFirebase(this.email, this.password);
 }
 
-class GetUserNameAndSurname extends AuthEvent {}
+class SigninWithTMDB extends AuthEvent {
+
+}
